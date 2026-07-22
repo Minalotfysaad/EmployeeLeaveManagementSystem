@@ -1,0 +1,6 @@
+<Solution>
+  <Project Path="../EmployeeLeaveManagement.Application/EmployeeLeaveManagement.Application.csproj" />
+  <Project Path="../EmployeeLeaveManagement.Domain/EmployeeLeaveManagement.Domain.csproj" />
+  <Project Path="../EmployeeLeaveManagement.Infrastructure/EmployeeLeaveManagement.Infrastructure.csproj" />
+  <Project Path="EmployeeLeaveManagement.API.csproj" />
+</Solution>

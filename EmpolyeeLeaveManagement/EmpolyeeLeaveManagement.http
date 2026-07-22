@@ -1,0 +1,6 @@
+@EmpolyeeLeaveManagement_HostAddress = http://localhost:5002
+
+GET {{EmpolyeeLeaveManagement_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
