@@ -17,7 +17,9 @@ namespace EmployeeLeaveManagement.Domain.Entities
 
         // Navigation
         public Department? Department { get; set; }
-        public Employee? Manager { get; set; }
-        public ICollection<Employee> Subordinates { get; set; } = new List<Employee>();
+        public Employee? Manager { get; set; } // For Employee user
+        public ICollection<Employee> Subordinates { get; set; } = new List<Employee>(); // For Manager User
+        public ICollection<EmployeeLeaveBalance> EmployeeLeaveBalances { get; set; } = new List<EmployeeLeaveBalance>();
+        public ICollection<LeaveRequest> LeaveRequests { get; set; } = new List<LeaveRequest>();
     }
 }

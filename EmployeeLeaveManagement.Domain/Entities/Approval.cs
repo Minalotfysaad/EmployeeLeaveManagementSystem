@@ -21,7 +21,7 @@ namespace EmployeeLeaveManagement.Domain.Entities
         public DateTime? HRDecisionDate { get; set; }
 
         //Navigation
-        public LeaveRequest? LeaveRequest { get; set; }
+        public LeaveRequest LeaveRequest { get; set; } = default!;
         public Employee? Manager { get; set; }
         public Employee? HR { get; set; }
 
