@@ -1,4 +1,5 @@
 ﻿using EmployeeLeaveManagement.Domain.Entities;
+using EmployeeLeaveManagement.Infrastructure.Authentication;
 using EmployeeLeaveManagement.Infrastructure.Persistence.Context;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -14,12 +15,12 @@ namespace EmployeeLeaveManagement.Infrastructure.Extensions
 {
     public static class InfrastructureServiceCollectionExtensions
     {
-        public static IServiceCollection AddInfrastructureServices(this IServiceCollection services, IConfiguration configuration)
+        public static IServiceCollection AddInfrastructureServices(this IServiceCollection services, IConfiguration _configuration)
         {
             //Register DbContext
             services.AddDbContext<EmployeeLeaveManagementDbContext>(options =>
             {
-                options.UseSqlServer(configuration.GetConnectionString("DefaultConnection"));
+                options.UseSqlServer(_configuration.GetConnectionString("DefaultConnection"));
             });
 
             //Register Identity
@@ -34,6 +35,9 @@ namespace EmployeeLeaveManagement.Infrastructure.Extensions
             })
                 .AddRoles<IdentityRole<Guid>>()
                 .AddEntityFrameworkStores<EmployeeLeaveManagementDbContext>();
+
+            //Services Registrations
+            services.Configure<JwtSettings>(_configuration.GetSection("JwtSettings"));
 
             return services;
         }

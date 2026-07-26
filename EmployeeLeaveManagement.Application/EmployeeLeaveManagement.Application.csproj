@@ -11,11 +11,13 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Abstractions\Services\" />
-    <Folder Include="Abstractions\Persistence\" />
-    <Folder Include="DTOs\" />
+    <Folder Include="Abstractions\Common\" />
+    <Folder Include="Abstractions\Repositories\" />
+    <Folder Include="DTOs\Employee\" />
+    <Folder Include="DTOs\Department\" />
+    <Folder Include="DTOs\LeaveRequest\" />
+    <Folder Include="DTOs\LeaveType\" />
     <Folder Include="Mappings\" />
-    <Folder Include="Features\" />
     <Folder Include="Validators\" />
   </ItemGroup>
 
