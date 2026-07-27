@@ -1,4 +1,4 @@
-﻿using EmployeeLeaveManagement.Domain.Constants;
+using EmployeeLeaveManagement.Domain.Constants;
 using EmployeeLeaveManagement.Domain.Entities;
 using EmployeeLeaveManagement.Infrastructure.Authentication;
 using Microsoft.AspNetCore.Identity;
@@ -48,17 +48,17 @@ namespace EmployeeLeaveManagement.Infrastructure.Persistence.Seed
                 }
             }
 
-            // Ensure default HR account exists
+            //Check DefaultAdmin configuration exists
             var adminSettings = scope.ServiceProvider.GetRequiredService<IOptions<DefaultAdminSettings>>().Value;
 
-            //Check DefaultAdmin configuration exists
             CheckDefaultAdminConfigExist(adminSettings);
 
+            // Ensure default HR account exists
             var defaultAdmin = await userManager.FindByEmailAsync(adminSettings.Email);
 
             if (defaultAdmin is null)
             {
-                defaultAdmin = new Employee
+                defaultAdmin = new Employee()
                 {
                     UserName = adminSettings.Email,
                     Email = adminSettings.Email,
@@ -76,7 +76,7 @@ namespace EmployeeLeaveManagement.Infrastructure.Persistence.Seed
                 }
             }
 
-            // Ensure the user has the HR role
+            // Add HR role to defaultAdmin
             if (!await userManager.IsInRoleAsync(defaultAdmin, Roles.HR))
             {
                 var roleResult = await userManager.AddToRoleAsync(defaultAdmin, Roles.HR);

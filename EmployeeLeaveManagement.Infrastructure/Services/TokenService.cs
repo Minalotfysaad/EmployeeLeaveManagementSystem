@@ -19,7 +19,7 @@ namespace EmployeeLeaveManagement.Infrastructure.Services
         private readonly JwtSettings _jwtSettings = jwtSettings.Value;
         public async Task<string> GenerateTokenAsync(Employee user)
         {
-            //Collect claims for payload
+            //Collect claims in a List<Claim>
             var claims = new List<Claim>()
             {
                 new Claim(ClaimTypes.Email, user.Email!),
