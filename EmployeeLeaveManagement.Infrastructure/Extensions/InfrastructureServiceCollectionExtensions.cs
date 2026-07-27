@@ -1,10 +1,14 @@
-﻿using EmployeeLeaveManagement.Domain.Entities;
+using EmployeeLeaveManagement.Application.Abstractions.Services;
+using EmployeeLeaveManagement.Domain.Entities;
 using EmployeeLeaveManagement.Infrastructure.Authentication;
 using EmployeeLeaveManagement.Infrastructure.Persistence.Context;
+using EmployeeLeaveManagement.Infrastructure.Services;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.IdentityModel.Tokens;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -34,11 +38,27 @@ namespace EmployeeLeaveManagement.Infrastructure.Extensions
                 options.Password.RequiredLength = 8;
             })
                 .AddRoles<IdentityRole<Guid>>()
+                .AddSignInManager<SignInManager<Employee>>()
                 .AddEntityFrameworkStores<EmployeeLeaveManagementDbContext>();
 
-            //Services Registrations
+            //Configurations
             services.Configure<JwtSettings>(_configuration.GetSection("JwtSettings"));
             services.Configure<DefaultAdminSettings>(_configuration.GetSection("DefaultAdmin"));
+            services.ConfigureOptions<JwtBearerOptionsSetup>();
+
+
+            //Register JWT Authentication
+            services.AddAuthentication(options =>
+            {
+                //"When a request comes in, which authentication handler should I use to identify the user?"
+                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                //"If authentication fails, how should I challenge the client? (returning a 401 challenge)"
+                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            }).AddJwtBearer();
+
+            //Register Services
+            services.AddScoped<IAuthService, AuthService>();
+            services.AddScoped<ITokenService, TokenService>();
 
             return services;
         }

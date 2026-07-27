@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -14,6 +14,6 @@ namespace EmployeeLeaveManagement.Application.DTOs.Auth
         public string Password { get; set; } = default!;
         public string FirstName { get; set; } = default!;
         public string LastName { get; set; } = default!;
-        public Guid DepartmentId { get; set; }
+        public Guid? DepartmentId { get; set; }
     }
 }

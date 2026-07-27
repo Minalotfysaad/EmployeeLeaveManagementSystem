@@ -1,6 +1,7 @@
 
 using EmployeeLeaveManagement.Infrastructure.Extensions;
 using EmployeeLeaveManagement.Infrastructure.Persistence.Seed;
+using Microsoft.OpenApi;
 
 namespace EmpolyeeLeaveManagement
 {
@@ -12,9 +13,28 @@ namespace EmpolyeeLeaveManagement
 
             // Add services to the container.
 
-            builder.Services.AddInfrastructureServices(builder.Configuration);
             builder.Services.AddControllers();
-            builder.Services.AddSwaggerGen();
+            builder.Services.AddSwaggerGen(options =>
+            {
+                options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+                {
+                    Name = "Authorization",
+                    Type = SecuritySchemeType.Http,
+                    Scheme = "Bearer",
+                    BearerFormat = "JWT",
+                    In = ParameterLocation.Header,
+                    Description = "Enter JWT token only. Swagger will prepend 'Bearer '."
+                });
+                options.AddSecurityRequirement(document => new OpenApiSecurityRequirement
+                {
+                    {
+                        new OpenApiSecuritySchemeReference("Bearer"),
+                        new List<string>()
+                    }
+                });
+            });
+
+            builder.Services.AddInfrastructureServices(builder.Configuration);
 
             var app = builder.Build();
 
@@ -27,12 +47,14 @@ namespace EmpolyeeLeaveManagement
 
             app.UseHttpsRedirection();
 
+            app.UseAuthentication();
+
             app.UseAuthorization();
 
+            await IdentitySeeder.SeedAsync(app.Services);
 
             app.MapControllers();
 
-            await IdentitySeeder.SeedAsync(app.Services);
             app.Run();
         }
     }
