@@ -38,6 +38,7 @@ namespace EmployeeLeaveManagement.Infrastructure.Extensions
 
             //Services Registrations
             services.Configure<JwtSettings>(_configuration.GetSection("JwtSettings"));
+            services.Configure<DefaultAdminSettings>(_configuration.GetSection("DefaultAdmin"));
 
             return services;
         }

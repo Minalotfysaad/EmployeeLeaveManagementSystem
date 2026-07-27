@@ -11,7 +11,7 @@ namespace EmployeeLeaveManagement.Domain.Entities
     {
         public string FirstName { get; set; } = default!;
         public string LastName { get; set; } = default!;
-        public Guid DepartmentId { get; set; }
+        public Guid? DepartmentId { get; set; }
         public Guid? ManagerId { get; set; }
         public DateTime CreatedAt { get; private set; } = DateTime.UtcNow;
 

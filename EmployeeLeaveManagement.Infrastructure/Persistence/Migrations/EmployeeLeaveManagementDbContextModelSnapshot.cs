@@ -4,19 +4,16 @@ using EmployeeLeaveManagement.Infrastructure.Persistence.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
-using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
 
-namespace EmployeeLeaveManagement.Infrastructure.Migrations
+namespace EmployeeLeaveManagement.Infrastructure.Persistence.Migrations
 {
     [DbContext(typeof(EmployeeLeaveManagementDbContext))]
-    [Migration("20260725183026_InitialCreate")]
-    partial class InitialCreate
+    partial class EmployeeLeaveManagementDbContextModelSnapshot : ModelSnapshot
     {
-        /// <inheritdoc />
-        protected override void BuildTargetModel(ModelBuilder modelBuilder)
+        protected override void BuildModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -107,7 +104,7 @@ namespace EmployeeLeaveManagement.Infrastructure.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
-                    b.Property<Guid>("DepartmentId")
+                    b.Property<Guid?>("DepartmentId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Email")
@@ -471,8 +468,7 @@ namespace EmployeeLeaveManagement.Infrastructure.Migrations
                     b.HasOne("EmployeeLeaveManagement.Domain.Entities.Department", "Department")
                         .WithMany("Employees")
                         .HasForeignKey("DepartmentId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.HasOne("EmployeeLeaveManagement.Domain.Entities.Employee", "Manager")
                         .WithMany("Subordinates")
