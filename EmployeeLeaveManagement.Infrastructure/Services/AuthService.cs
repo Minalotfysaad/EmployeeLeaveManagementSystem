@@ -4,12 +4,6 @@ using EmployeeLeaveManagement.Domain.Common.Exceptions;
 using EmployeeLeaveManagement.Domain.Constants;
 using EmployeeLeaveManagement.Domain.Entities;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.Identity.Client;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace EmployeeLeaveManagement.Infrastructure.Services
 {
