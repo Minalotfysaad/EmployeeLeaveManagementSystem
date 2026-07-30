@@ -13,12 +13,14 @@
   <ItemGroup>
     <Folder Include="Abstractions\Common\" />
     <Folder Include="Abstractions\Repositories\" />
-    <Folder Include="DTOs\Employee\" />
     <Folder Include="DTOs\Department\" />
     <Folder Include="DTOs\LeaveRequest\" />
     <Folder Include="DTOs\LeaveType\" />
-    <Folder Include="Mappings\" />
-    <Folder Include="Validators\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="AutoMapper" Version="13.0.1" />
+    <PackageReference Include="FluentValidation.DependencyInjectionExtensions" Version="12.1.1" />
   </ItemGroup>
 
 </Project>

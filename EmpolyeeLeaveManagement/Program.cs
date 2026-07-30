@@ -1,4 +1,5 @@
 
+using EmployeeLeaveManagement.Application.Extentions;
 using EmployeeLeaveManagement.Infrastructure.Extensions;
 using EmployeeLeaveManagement.Infrastructure.Persistence.Seed;
 using Microsoft.OpenApi;
@@ -35,6 +36,7 @@ namespace EmpolyeeLeaveManagement
             });
 
             builder.Services.AddInfrastructureServices(builder.Configuration);
+            builder.Services.AddApplicationServices();
 
             var app = builder.Build();
 
