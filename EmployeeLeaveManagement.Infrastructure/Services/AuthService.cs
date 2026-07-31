@@ -13,7 +13,7 @@ namespace EmployeeLeaveManagement.Infrastructure.Services
         SignInManager<Employee> _signInManager,
         ITokenService _tokenService,
         IValidator<RegisterRequestDto> registerValidator,
-        IValidator<LoginRequestDto> loginValidator)
+        IValidator<LoginRequestDto> _loginValidator)
         : IAuthService
     {
         public async Task<AuthResponseDto> RegisterAsync(RegisterRequestDto dto)
@@ -64,7 +64,7 @@ namespace EmployeeLeaveManagement.Infrastructure.Services
         public async Task<AuthResponseDto> LoginAsync(LoginRequestDto dto)
         {
             //Validate
-            var validationResult = await loginValidator.ValidateAsync(dto);
+            var validationResult = await _loginValidator.ValidateAsync(dto);
             if (!validationResult.IsValid)
             {
                 throw new BadRequestException(validationResult.Errors.Select(e => e.ErrorMessage).ToList());

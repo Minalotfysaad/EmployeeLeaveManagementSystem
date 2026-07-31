@@ -13,7 +13,7 @@ namespace EmployeeLeaveManagement.Application.DTOs.Employee
         public string LastName { get; set; } = default!;
         public string Email { get; set; } = default!;
         public string DepartmentName { get; set; } = default!;
-        public string PhoneNumber { get; set; } = default!;
+        public string? PhoneNumber { get; set; } = default!;
         public List<string> Roles { get; set; } = [];
         public DateTime CreatedDate { get; set; }
 

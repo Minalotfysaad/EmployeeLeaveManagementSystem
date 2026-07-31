@@ -15,6 +15,7 @@ namespace EmployeeLeaveManagement.API.Controllers
         [HttpPost("login")]
         public async Task<ActionResult<AuthResponseDto>> LoginAsync([FromBody] LoginRequestDto dto)
             => Ok(await _authService.LoginAsync(dto));
+
     }
 }
 

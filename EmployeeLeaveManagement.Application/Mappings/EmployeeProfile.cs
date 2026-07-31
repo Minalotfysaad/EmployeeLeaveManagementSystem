@@ -19,6 +19,8 @@ namespace EmployeeLeaveManagement.Application.Mappings
 
             CreateMap<Employee, EmployeeSummaryDto>()
                 .ForMember(des => des.FullName, opt => opt.MapFrom(src => $"{src.FirstName} {src.LastName}"));
+
+            CreateMap<UpdateEmployeeDto, Employee>();
         }
     }
 }

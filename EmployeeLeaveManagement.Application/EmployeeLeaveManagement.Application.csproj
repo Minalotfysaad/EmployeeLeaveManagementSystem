@@ -11,8 +11,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Abstractions\Common\" />
-    <Folder Include="Abstractions\Repositories\" />
     <Folder Include="DTOs\Department\" />
     <Folder Include="DTOs\LeaveRequest\" />
     <Folder Include="DTOs\LeaveType\" />

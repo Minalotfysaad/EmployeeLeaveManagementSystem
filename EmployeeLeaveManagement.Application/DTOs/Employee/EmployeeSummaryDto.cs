@@ -12,6 +12,5 @@ namespace EmployeeLeaveManagement.Application.DTOs.Employee
         public Guid Id { get; set; } = default!;
         public string FullName { get; set; } = default!;
         public string Email { get; set; } = default!;
-        public List<string> Roles { get; set; } = [];
     }
 }

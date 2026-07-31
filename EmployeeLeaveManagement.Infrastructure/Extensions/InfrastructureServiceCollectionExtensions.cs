@@ -3,6 +3,8 @@ using EmployeeLeaveManagement.Domain.Entities;
 using EmployeeLeaveManagement.Infrastructure.Authentication;
 using EmployeeLeaveManagement.Infrastructure.Persistence.Context;
 using EmployeeLeaveManagement.Infrastructure.Services;
+using EmployeeLeaveManagement.Application.Abstractions.Persistence;
+using EmployeeLeaveManagement.Infrastructure.Persistence.Repositories;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -57,8 +59,10 @@ namespace EmployeeLeaveManagement.Infrastructure.Extensions
             }).AddJwtBearer();
 
             //Register Services
+            services.AddScoped<IUnitOfWork, UnitOfWork>();
             services.AddScoped<IAuthService, AuthService>();
             services.AddScoped<ITokenService, TokenService>();
+            services.AddScoped<IEmployeeService, EmployeeService>();
 
             return services;
         }
