@@ -1,6 +1,6 @@
 ﻿using EmployeeLeaveManagement.Application.Abstractions.Services;
 using EmployeeLeaveManagement.Application.DTOs.Auth;
-using EmployeeLeaveManagement.Domain.Common.Exceptions;
+using EmployeeLeaveManagement.Application.Exceptions;
 using EmployeeLeaveManagement.Domain.Constants;
 using EmployeeLeaveManagement.Domain.Entities;
 using FluentValidation;

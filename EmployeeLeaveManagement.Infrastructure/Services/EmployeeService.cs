@@ -11,7 +11,7 @@ using Microsoft.AspNetCore.Identity;
 using EmployeeLeaveManagement.Domain.Entities;
 using AutoMapper;
 using FluentValidation;
-using EmployeeLeaveManagement.Domain.Common.Exceptions;
+using EmployeeLeaveManagement.Application.Exceptions;
 using Microsoft.EntityFrameworkCore;
 using EmployeeLeaveManagement.Application.Abstractions.Persistence;
 using EmployeeLeaveManagement.Infrastructure.Persistence.Specifications;

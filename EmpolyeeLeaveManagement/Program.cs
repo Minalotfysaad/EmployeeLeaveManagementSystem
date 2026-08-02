@@ -1,4 +1,5 @@
 
+using EmployeeLeaveManagement.API.Extensions;
 using EmployeeLeaveManagement.Application.Extentions;
 using EmployeeLeaveManagement.Infrastructure.Extensions;
 using EmployeeLeaveManagement.Infrastructure.Persistence.Seed;
@@ -37,6 +38,7 @@ namespace EmpolyeeLeaveManagement
 
             builder.Services.AddInfrastructureServices(builder.Configuration);
             builder.Services.AddApplicationServices();
+            builder.Services.AddAPIServices();
 
             var app = builder.Build();
 
@@ -46,6 +48,8 @@ namespace EmpolyeeLeaveManagement
                 app.UseSwagger();
                 app.UseSwaggerUI();
             }
+
+            app.UseExceptionHandler();
 
             app.UseHttpsRedirection();
 
