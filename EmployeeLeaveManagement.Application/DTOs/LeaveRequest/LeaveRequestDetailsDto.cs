@@ -16,5 +16,6 @@ namespace EmployeeLeaveManagement.Application.DTOs.LeaveRequest
         public int TotalDays { get; set; }
         public RequestStatus Status { get; set; }
         public string Reason { get; set; } = string.Empty;
+        public DateTime CreatedAt { get; set; }
     }
 }

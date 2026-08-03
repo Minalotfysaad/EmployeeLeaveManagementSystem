@@ -6,7 +6,7 @@ namespace EmployeeLeaveManagement.API.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class AuthController(IAuthService _authService) : ControllerBase
+    public class AuthController(IAuthService _authService) : ApiControllerBase
     {
         [HttpPost("register")]
         public async Task<ActionResult<AuthResponseDto>> RegisterAsync([FromBody] RegisterRequestDto dto)

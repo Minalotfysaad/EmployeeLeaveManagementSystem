@@ -1,6 +1,8 @@
 ﻿using AutoMapper;
 using EmployeeLeaveManagement.Application.Abstractions.Persistence;
 using EmployeeLeaveManagement.Application.Abstractions.Services;
+using EmployeeLeaveManagement.Application.Common.Models;
+using EmployeeLeaveManagement.Application.DTOs.Employee;
 using EmployeeLeaveManagement.Application.DTOs.LeaveRequest;
 using EmployeeLeaveManagement.Application.Exceptions;
 using EmployeeLeaveManagement.Domain.Entities;
@@ -74,6 +76,44 @@ namespace EmployeeLeaveManagement.Infrastructure.Services
 
             //Return LeaveRequestDetailsDto
             return _mapper.Map<LeaveRequestDetailsDto>(leaveRequest);
+        }
+
+        public async Task<PagedResult<LeaveRequestDetailsDto>> GetMyLeaveRequestsAsync(Guid employeeId, EmployeeQueryParameters parameters)
+        {
+            var leaveRequestRepository = _unitOfWork.Repository<LeaveRequest>();
+            var specification = new MyLeaveRequestsSpecification(employeeId, parameters);
+            var leaveRequests = await leaveRequestRepository.ListAsync(specification);
+            var totalCount = await leaveRequestRepository.CountAsync(specification);
+
+            var dto = _mapper.Map<List<LeaveRequestDetailsDto>>(leaveRequests);
+            return PagedResult<LeaveRequestDetailsDto>.Create(dto, parameters.Page, parameters.PageSize, totalCount);
+        }
+
+        public async Task<LeaveRequestDetailsDto> GetMyLeaveRequestByIdAsync( Guid employeeId,Guid requestId)
+        {
+            var repository = _unitOfWork.Repository<LeaveRequest>();
+            var specification =new MyLeaveRequestByIdSpecification(employeeId, requestId);
+
+            var leaveRequest = await repository.FirstOrDefaultAsync(specification)
+                ?? throw new NotFoundException(nameof(LeaveRequest), requestId);
+
+            return _mapper.Map<LeaveRequestDetailsDto>(leaveRequest);
+        }
+
+        public async Task CancelLeaveRequestAsync(Guid employeeId, Guid requestId)
+        {
+            var repository = _unitOfWork.Repository<LeaveRequest>();
+            var specification =new MyLeaveRequestByIdSpecification(employeeId, requestId);
+
+            var leaveRequest =await repository.FirstOrDefaultAsync(specification)
+                ?? throw new NotFoundException(nameof(LeaveRequest), requestId);
+
+            if (leaveRequest.Status != RequestStatus.Pending)
+                throw new BadRequestException("Only pending leave requests can be cancelled.");
+
+            leaveRequest.Status = RequestStatus.Cancelled;
+
+            await _unitOfWork.SaveChangesAsync();
         }
     }
 }

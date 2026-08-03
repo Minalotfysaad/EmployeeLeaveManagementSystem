@@ -10,10 +10,20 @@ namespace EmployeeLeaveManagement.API.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class EmployeeController(IEmployeeService _employeeService) : ControllerBase
+    public class EmployeeController(IEmployeeService _employeeService) : ApiControllerBase
     {
+        [Authorize(Roles = Roles.Employee)]
+        [HttpGet("me")]
+        public async Task<ActionResult<EmployeeDetailsDto>> GetMyProfile()
+        {
+            var employee = await _employeeService.GetEmployeeByIdAsync(CurrentUserId);
+
+            return Ok(employee);
+        }
+
 
         [HttpGet("{id:guid}")]
+        [Authorize(Roles = Roles.HR)]
         public async Task<ActionResult<EmployeeDetailsDto>> GetById(Guid id)
             => Ok(await _employeeService.GetEmployeeByIdAsync(id));
 

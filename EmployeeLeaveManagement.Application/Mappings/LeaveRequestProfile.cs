@@ -23,7 +23,8 @@ namespace EmployeeLeaveManagement.Application.Mappings
                 .ForMember(d => d.LeaveType, opt => opt.Ignore())
                 .ForMember(d => d.Approval, opt => opt.Ignore());
 
-            CreateMap<LeaveRequest, LeaveRequestDetailsDto>();
+            CreateMap<LeaveRequest, LeaveRequestDetailsDto>()
+                .ForMember(dest => dest.LeaveType, opt => opt.MapFrom(d => d.LeaveType!.Name));
         }
     }
 }
