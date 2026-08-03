@@ -1,4 +1,5 @@
-﻿using EmployeeLeaveManagement.Application.Abstractions.Services;
+﻿using EmployeeLeaveManagement.Application.Abstractions.Persistence;
+using EmployeeLeaveManagement.Application.Abstractions.Services;
 using EmployeeLeaveManagement.Application.DTOs.Auth;
 using EmployeeLeaveManagement.Application.Exceptions;
 using EmployeeLeaveManagement.Domain.Constants;
@@ -11,6 +12,7 @@ namespace EmployeeLeaveManagement.Infrastructure.Services
     public class AuthService(
         UserManager<Employee> _userManager,
         SignInManager<Employee> _signInManager,
+        IUnitOfWork _unitOfWork,
         ITokenService _tokenService,
         IValidator<RegisterRequestDto> registerValidator,
         IValidator<LoginRequestDto> _loginValidator)
@@ -51,6 +53,25 @@ namespace EmployeeLeaveManagement.Infrastructure.Services
                 var errors = roleResult.Errors.Select(e => e.Description).ToList();
                 throw new BadRequestException(errors);
             }
+
+            //Create Balance
+            var leaveTypeRepository = _unitOfWork.Repository<LeaveType>();
+            var leaveTypes = await leaveTypeRepository.ListAllAsync();
+
+            var balanceRepository = _unitOfWork.Repository<EmployeeLeaveBalance>();
+
+            foreach (var leaveType in leaveTypes)
+            {
+                await balanceRepository.AddAsync(new EmployeeLeaveBalance
+                {
+                    EmployeeId = user.Id,
+                    LeaveTypeId = leaveType.Id,
+                    RemainingDays = leaveType.DefaultDays
+                });
+            }
+
+            await _unitOfWork.SaveChangesAsync();
+
 
             //Return
             return new AuthResponseDto()

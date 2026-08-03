@@ -9,15 +9,9 @@ namespace EmployeeLeaveManagement.Domain.Enums
     public enum RequestStatus
     {
         Pending = 0,
-
-        ManagerApproved,
-
-        ManagerRejected,
-
-        HRApproved,
-
-        HRRejected,
-
-        Cancelled
+        Approved = 1,
+        RejectedByManager = 2,
+        RejectedByHR = 3,
+        Cancelled = 4
     }
 }

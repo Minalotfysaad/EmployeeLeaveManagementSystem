@@ -11,6 +11,7 @@ namespace EmployeeLeaveManagement.Application.Abstractions.Persistence
     {
         Task<T?> FirstOrDefaultAsync(ISpecification<T> specification);
         Task<List<T>> ListAsync(ISpecification<T> specification);
+        Task<List<T>> ListAllAsync();
         Task<int> CountAsync(ISpecification<T> specification);
         Task<bool> AnyAsync(ISpecification<T> specification);
         Task AddAsync(T entity);

@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace EmployeeLeaveManagement.Infrastructure.Persistence.Specifications
 {
-    public class EmployeeByIdSpecification : BaseSpecification<Employee>
+    public sealed class EmployeeByIdSpecification : BaseSpecification<Employee>
     {
         public EmployeeByIdSpecification(Guid id) : base(e => e.Id == id)
         {

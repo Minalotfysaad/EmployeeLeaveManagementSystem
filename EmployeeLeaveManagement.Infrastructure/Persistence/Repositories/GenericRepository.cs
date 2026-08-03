@@ -28,6 +28,11 @@ namespace EmployeeLeaveManagement.Infrastructure.Persistence.Repositories
             return await query.ToListAsync();
         }
 
+        public async Task<List<T>> ListAllAsync()
+        {
+            return await _dbSet.ToListAsync();
+        }
+
         public async Task<T?> FirstOrDefaultAsync(ISpecification<T> specification)
         {
             var query = SpecificationEvaluator<T>.GetQuery(_dbSet, specification);
@@ -58,5 +63,7 @@ namespace EmployeeLeaveManagement.Infrastructure.Persistence.Repositories
         {
             _dbSet.Remove(entity);
         }
+
+
     }
 }

@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace EmployeeLeaveManagement.Infrastructure.Persistence.Migrations
 {
     [DbContext(typeof(EmployeeLeaveManagementDbContext))]
-    [Migration("20260727001607_InitialCreate")]
-    partial class InitialCreate
+    [Migration("20260802235359_InitialMigration")]
+    partial class InitialMigration
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -247,8 +247,8 @@ namespace EmployeeLeaveManagement.Infrastructure.Persistence.Migrations
                     b.Property<Guid>("EmployeeId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<DateTime>("EndDate")
-                        .HasColumnType("datetime2");
+                    b.Property<DateOnly>("EndDate")
+                        .HasColumnType("date");
 
                     b.Property<Guid>("LeaveTypeId")
                         .HasColumnType("uniqueidentifier");
@@ -257,8 +257,8 @@ namespace EmployeeLeaveManagement.Infrastructure.Persistence.Migrations
                         .HasMaxLength(200)
                         .HasColumnType("nvarchar(200)");
 
-                    b.Property<DateTime>("StartDate")
-                        .HasColumnType("datetime2");
+                    b.Property<DateOnly>("StartDate")
+                        .HasColumnType("date");
 
                     b.Property<int>("Status")
                         .HasColumnType("int");

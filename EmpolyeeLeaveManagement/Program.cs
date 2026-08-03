@@ -3,6 +3,7 @@ using EmployeeLeaveManagement.API.Extensions;
 using EmployeeLeaveManagement.Application.Extentions;
 using EmployeeLeaveManagement.Infrastructure.Extensions;
 using EmployeeLeaveManagement.Infrastructure.Persistence.Seed;
+using EmployeeLeaveManagement.Infrastructure.Persistence.Context;
 using Microsoft.OpenApi;
 
 namespace EmpolyeeLeaveManagement
@@ -58,6 +59,12 @@ namespace EmpolyeeLeaveManagement
             app.UseAuthorization();
 
             await IdentitySeeder.SeedAsync(app.Services);
+
+            using (var scope = app.Services.CreateScope())
+            {
+                var context = scope.ServiceProvider.GetRequiredService<EmployeeLeaveManagementDbContext>();
+                await DatabaseSeeder.SeedAsync(context);
+            }
 
             app.MapControllers();
 

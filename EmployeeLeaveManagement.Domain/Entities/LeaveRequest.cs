@@ -12,9 +12,9 @@ namespace EmployeeLeaveManagement.Domain.Entities
     {
         public Guid EmployeeId { get; set; }
         public Guid LeaveTypeId { get; set; }
-        public DateTime StartDate { get; set; }
-        public DateTime EndDate { get; set; }
-        public int TotalDays { get; set; }
+        public DateOnly StartDate { get; set; }
+        public DateOnly EndDate { get; set; }
+        public int TotalDays { get; private set; }
         public string? Reason { get; set; }
         public RequestStatus Status { get; set; }
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
@@ -23,5 +23,11 @@ namespace EmployeeLeaveManagement.Domain.Entities
         public Employee? Employee { get; set; }
         public LeaveType? LeaveType { get; set; }
         public Approval? Approval { get; set; }
+
+
+        public void CalculateTotalDays()
+        {
+            TotalDays = EndDate.DayNumber - StartDate.DayNumber + 1;
+        }
     }
 }
