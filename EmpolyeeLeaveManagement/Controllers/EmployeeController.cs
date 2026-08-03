@@ -10,7 +10,7 @@ namespace EmployeeLeaveManagement.API.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class EmployeeController(IEmployeeService _employeeService) : ApiControllerBase
+    public class EmployeeController(IEmployeeManagementService _employeeService) : ApiControllerBase
     {
         [Authorize(Roles = Roles.Employee)]
         [HttpGet("me")]
@@ -20,36 +20,5 @@ namespace EmployeeLeaveManagement.API.Controllers
 
             return Ok(employee);
         }
-
-
-        [HttpGet("{id:guid}")]
-        [Authorize(Roles = Roles.HR)]
-        public async Task<ActionResult<EmployeeDetailsDto>> GetById(Guid id)
-            => Ok(await _employeeService.GetEmployeeByIdAsync(id));
-
-
-        [HttpGet]
-        [Authorize(Roles = $"{Roles.HR},{Roles.Manager}")]
-        public async Task<ActionResult<PagedResult<EmployeeSummaryDto>>> GetAll([FromQuery] EmployeeQueryParameters parameters)
-            => Ok(await _employeeService.GetEmployeesAsync(parameters));
-
-
-        [HttpPut("{id:guid}")]
-        [Authorize(Roles = Roles.HR)]
-        public async Task<IActionResult> Update(Guid id, UpdateEmployeeDto dto)
-        {
-            await _employeeService.UpdateEmployeeAsync(id, dto);
-            return NoContent();
-        }
-
-
-        [HttpDelete("{id:guid}")]
-        [Authorize(Roles = Roles.HR)]
-        public async Task<IActionResult> Delete(Guid id)
-        {
-            await _employeeService.DeleteEmployeeAsync(id);
-            return NoContent();
-        }
-
     }
 }

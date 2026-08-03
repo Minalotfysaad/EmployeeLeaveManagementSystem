@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace EmployeeLeaveManagement.Application.Abstractions.Services
 {
-    public interface IEmployeeService
+    public interface IEmployeeManagementService
     {
         Task<EmployeeDetailsDto> GetEmployeeByIdAsync(Guid id);
 

@@ -62,7 +62,7 @@ namespace EmployeeLeaveManagement.Infrastructure.Extensions
             services.AddScoped<IUnitOfWork, UnitOfWork>();
             services.AddScoped<IAuthService, AuthService>();
             services.AddScoped<ITokenService, TokenService>();
-            services.AddScoped<IEmployeeService, EmployeeService>();
+            services.AddScoped<IEmployeeManagementService, EmployeeManagementService>();
             services.AddScoped<ILeaveRequestService, LeaveRequestService>();
 
             return services;

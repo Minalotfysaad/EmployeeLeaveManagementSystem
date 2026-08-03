@@ -18,11 +18,11 @@ using EmployeeLeaveManagement.Infrastructure.Persistence.Specifications;
 
 namespace EmployeeLeaveManagement.Infrastructure.Services
 {
-    public class EmployeeService(
+    public class EmployeeManagementService(
         IUnitOfWork _unitOfWork,
         IMapper _mapper,
         IValidator<UpdateEmployeeDto> _updateValidator
-        ) : IEmployeeService
+        ) : IEmployeeManagementService
     {
 
         public async Task<EmployeeDetailsDto> GetEmployeeByIdAsync(Guid id)
