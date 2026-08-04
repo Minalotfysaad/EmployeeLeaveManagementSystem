@@ -16,7 +16,8 @@ namespace EmployeeLeaveManagement.Infrastructure.Persistence.Specifications
                 lr.EmployeeId == employeeId &&
                     (
                         lr.Status == RequestStatus.Pending ||
-                        lr.Status == RequestStatus.Approved
+                        lr.Status == RequestStatus.ManagerApproved ||
+                        lr.Status == RequestStatus.HRApproved
                     ) &&
                     startDate <= lr.EndDate &&
                     endDate >= lr.StartDate)
