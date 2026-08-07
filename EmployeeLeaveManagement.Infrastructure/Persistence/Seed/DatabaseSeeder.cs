@@ -100,7 +100,7 @@ namespace EmployeeLeaveManagement.Infrastructure.Persistence.Seed
                 Name = "New Year's Day",
                 StartDate = new DateTime(currentYear, 1, 1),
                 EndDate = new DateTime(currentYear, 1, 1),
-                CreatedBy = defaultUserId
+                CreatedById = defaultUserId
             },
 
             new Holiday
@@ -108,7 +108,7 @@ namespace EmployeeLeaveManagement.Infrastructure.Persistence.Seed
                 Name = "Labour Day",
                 StartDate = new DateTime(currentYear, 5, 1),
                 EndDate = new DateTime(currentYear, 5, 1),
-                CreatedBy = defaultUserId
+                CreatedById = defaultUserId
             },
 
             new Holiday
@@ -116,7 +116,7 @@ namespace EmployeeLeaveManagement.Infrastructure.Persistence.Seed
                 Name = "Christmas Day",
                 StartDate = new DateTime(currentYear, 12, 25),
                 EndDate = new DateTime(currentYear, 12, 25),
-                CreatedBy = defaultUserId
+                CreatedById = defaultUserId
             }
             ];
 

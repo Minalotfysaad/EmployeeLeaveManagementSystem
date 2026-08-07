@@ -20,7 +20,7 @@ namespace EmployeeLeaveManagement.Infrastructure.Persistence.Configurations
             //Relationships
             builder.HasOne(h => h.HR)
                 .WithMany()
-                .HasForeignKey(h => h.CreatedBy)
+                .HasForeignKey(h => h.CreatedById)
                 .OnDelete(DeleteBehavior.Restrict);
         }
     }

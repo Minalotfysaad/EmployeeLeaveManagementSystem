@@ -12,7 +12,7 @@ namespace EmployeeLeaveManagement.Domain.Entities
         public string Name { get; set; } = default!;
         public DateTime StartDate { get; set; }
         public DateTime EndDate { get; set; }
-        public Guid CreatedBy { get; set; }
+        public Guid CreatedById { get; set; }
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 
         //Navigation
