@@ -1,6 +1,7 @@
 ﻿    using EmployeeLeaveManagement.Application.Abstractions.Services;
 using EmployeeLeaveManagement.Application.Common.Models;
 using EmployeeLeaveManagement.Application.DTOs.Approval;
+using EmployeeLeaveManagement.Application.DTOs.Balance;
 using EmployeeLeaveManagement.Application.DTOs.Employee;
 using EmployeeLeaveManagement.Application.DTOs.LeaveRequest;
 using EmployeeLeaveManagement.Domain.Constants;
@@ -15,6 +16,7 @@ namespace EmployeeLeaveManagement.API.Controllers
     [Authorize(Roles = Roles.HR)]
     public class HRController(
         IEmployeeManagementService _employeeService,
+        IBalanceService _balanceService,
         IApprovalService _approvalService)
         : ApiControllerBase
     {
@@ -45,6 +47,34 @@ namespace EmployeeLeaveManagement.API.Controllers
             await _employeeService.DeleteEmployeeAsync(id);
             return NoContent();
         }
+        #endregion
+
+        #region Employee Leave Balance Management
+
+        [HttpGet("employees/{employeeId:guid}/balances")]
+        public async Task<ActionResult<List<BalanceDto>>> GetEmployeeBalances(Guid employeeId)
+        {
+            var balances =await _balanceService.GetBalancesAsync(employeeId);
+
+            return Ok(balances);
+        }
+
+        [HttpGet("employees/{employeeId:guid}/balances/{leaveTypeId:guid}")]
+        public async Task<ActionResult<BalanceDto>> GetEmployeeBalance(Guid employeeId, Guid leaveTypeId)
+        {
+            var balance = await _balanceService.GetBalanceAsync(employeeId, leaveTypeId);
+
+            return Ok(balance);
+        }
+
+        [HttpPatch("employees/{employeeId:guid}/balances/{leaveTypeId:guid}")]
+        public async Task<IActionResult> UpdateEmployeeBalance(Guid employeeId, Guid leaveTypeId, [FromBody] UpdateBalanceDto dto)
+        {
+            await _balanceService.UpdateBalanceAsync( employeeId, leaveTypeId, dto);
+
+            return NoContent();
+        }
+
         #endregion
 
         #region LeaveRequest Management Endpoints

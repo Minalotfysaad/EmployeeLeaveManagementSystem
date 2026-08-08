@@ -9,8 +9,7 @@ namespace EmployeeLeaveManagement.API.Controllers
         {
             get
             {
-                var employeeIdClaim =
-                    User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+                var employeeIdClaim =User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
 
                 if (!Guid.TryParse(employeeIdClaim, out var employeeId))
                     throw new UnauthorizedAccessException("Invalid user identity.");
