@@ -1,17 +1,16 @@
-﻿using EmployeeLeaveManagement.Domain.Common;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace EmployeeLeaveManagement.Domain.Entities
+namespace EmployeeLeaveManagement.Application.DTOs.LeaveType
 {
-    public class LeaveType : BaseEntity<Guid>
+    public class LeaveTypeDetailsDto
     {
+        public Guid Id { get; set; }
         public string Name { get; set; } = default!;
         public string? Description { get; set; }
         public int DefaultDays { get; set; }
-
     }
 }
