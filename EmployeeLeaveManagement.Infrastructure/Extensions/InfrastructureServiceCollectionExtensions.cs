@@ -69,6 +69,7 @@ namespace EmployeeLeaveManagement.Infrastructure.Extensions
             services.AddScoped<ILeaveTypeService, LeaveTypeService>();
             services.AddScoped<IBalanceService, BalanceService>();
             services.AddScoped<IDepartmentService, DepartmentService>();
+            services.AddScoped<IDashboardService, DashboardService>();
 
 
             return services;

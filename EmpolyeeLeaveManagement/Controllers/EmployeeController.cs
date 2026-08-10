@@ -1,6 +1,7 @@
 ﻿    using EmployeeLeaveManagement.Application.Abstractions.Services;
 using EmployeeLeaveManagement.Application.Common.Models;
 using EmployeeLeaveManagement.Application.DTOs.Balance;
+using EmployeeLeaveManagement.Application.DTOs.Dashboard;
 using EmployeeLeaveManagement.Application.DTOs.Employee;
 using EmployeeLeaveManagement.Domain.Constants;
 using EmployeeLeaveManagement.Infrastructure.Services;
@@ -13,7 +14,8 @@ namespace EmployeeLeaveManagement.API.Controllers
     [Route("api/[controller]")]
     public class EmployeeController(
         IEmployeeManagementService _employeeService,
-        IBalanceService _balanceService)
+        IBalanceService _balanceService,
+        IDashboardService _dashboardService)
         : ApiControllerBase
     {
         [Authorize(Roles = Roles.Employee)]
@@ -41,6 +43,16 @@ namespace EmployeeLeaveManagement.API.Controllers
             var balance = await _balanceService.GetBalanceAsync(CurrentUserId, leaveTypeId);
 
             return Ok(balance);
+        }
+
+        [HttpGet("dashboard")]
+        public async Task<ActionResult<EmployeeDashboardDto>>GetDashboardAsync()
+        {
+            var employeeId = CurrentUserId;
+
+            var dashboard =await _dashboardService.GetEmployeeDashboardAsync(employeeId);
+
+            return Ok(dashboard);
         }
     }
 }

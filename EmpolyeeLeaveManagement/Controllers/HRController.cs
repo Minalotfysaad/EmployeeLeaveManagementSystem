@@ -2,6 +2,7 @@
 using EmployeeLeaveManagement.Application.Common.Models;
 using EmployeeLeaveManagement.Application.DTOs.Approval;
 using EmployeeLeaveManagement.Application.DTOs.Balance;
+using EmployeeLeaveManagement.Application.DTOs.Dashboard;
 using EmployeeLeaveManagement.Application.DTOs.Department;
 using EmployeeLeaveManagement.Application.DTOs.Employee;
 using EmployeeLeaveManagement.Application.DTOs.LeaveRequest;
@@ -19,7 +20,8 @@ namespace EmployeeLeaveManagement.API.Controllers
         IEmployeeManagementService _employeeService,
         IBalanceService _balanceService,
         IApprovalService _approvalService,
-        IDepartmentService _departmentService)
+        IDepartmentService _departmentService,
+        IDashboardService _dashboardService)
         : ApiControllerBase
     {
 
@@ -139,6 +141,18 @@ namespace EmployeeLeaveManagement.API.Controllers
             await _departmentService.DeleteAsync(id);
 
             return NoContent();
+        }
+
+        #endregion
+
+        #region Dashboard
+
+        [HttpGet("dashboard")]
+        public async Task<ActionResult<HRDashboardDto>>GetDashboardAsync()
+        {
+            var dashboard = await _dashboardService.GetHRDashboardAsync();
+
+            return Ok(dashboard);
         }
 
         #endregion
