@@ -2,6 +2,7 @@
 using EmployeeLeaveManagement.Application.Common.Models;
 using EmployeeLeaveManagement.Application.DTOs.Approval;
 using EmployeeLeaveManagement.Application.DTOs.Balance;
+using EmployeeLeaveManagement.Application.DTOs.Department;
 using EmployeeLeaveManagement.Application.DTOs.Employee;
 using EmployeeLeaveManagement.Application.DTOs.LeaveRequest;
 using EmployeeLeaveManagement.Domain.Constants;
@@ -17,7 +18,8 @@ namespace EmployeeLeaveManagement.API.Controllers
     public class HRController(
         IEmployeeManagementService _employeeService,
         IBalanceService _balanceService,
-        IApprovalService _approvalService)
+        IApprovalService _approvalService,
+        IDepartmentService _departmentService)
         : ApiControllerBase
     {
 
@@ -98,6 +100,47 @@ namespace EmployeeLeaveManagement.API.Controllers
             await _approvalService.HRRejectAsync(hrId, requestId, decision);
             return NoContent();
         }
+        #endregion
+
+        #region Department Management
+
+        [HttpGet("departments")]
+        public async Task<ActionResult<PagedResult<DepartmentDetailsDto>>>GetDepartments([FromQuery] EmployeeQueryParameters parameters)
+            => Ok(await _departmentService.GetAllAsync(parameters));
+
+
+        [HttpGet("departments/{id:guid}")]
+        public async Task<ActionResult<DepartmentDetailsDto>>GetDepartment(Guid id)
+            =>  Ok(await _departmentService.GetByIdAsync(id));
+
+
+        [HttpPost("departments")]
+        public async Task<ActionResult<DepartmentDetailsDto>>CreateDepartment([FromBody] CreateDepartmentDto dto)
+        {
+            var department = await _departmentService.CreateAsync(dto);
+
+            return CreatedAtAction(
+                nameof(GetDepartment),
+                new { id = department.Id },
+                department);
+        }
+
+        [HttpPut("departments/{id:guid}")]
+        public async Task<IActionResult> UpdateDepartment(Guid id, [FromBody] UpdateDepartmentDto dto)
+        {
+            await _departmentService.UpdateAsync(id, dto);
+
+            return NoContent();
+        }
+
+        [HttpDelete("departments/{id:guid}")]
+        public async Task<IActionResult> DeleteDepartment(Guid id)
+        {
+            await _departmentService.DeleteAsync(id);
+
+            return NoContent();
+        }
+
         #endregion
     }
 }
