@@ -6,6 +6,7 @@ using EmployeeLeaveManagement.Application.DTOs.Dashboard;
 using EmployeeLeaveManagement.Application.DTOs.Department;
 using EmployeeLeaveManagement.Application.DTOs.Employee;
 using EmployeeLeaveManagement.Application.DTOs.LeaveRequest;
+using EmployeeLeaveManagement.Application.DTOs.RoleManagement;
 using EmployeeLeaveManagement.Domain.Constants;
 using EmployeeLeaveManagement.Infrastructure.Services;
 using Microsoft.AspNetCore.Authorization;
@@ -21,7 +22,8 @@ namespace EmployeeLeaveManagement.API.Controllers
         IBalanceService _balanceService,
         IApprovalService _approvalService,
         IDepartmentService _departmentService,
-        IDashboardService _dashboardService)
+        IDashboardService _dashboardService,
+        IOrganizationManagementService _organizationService)
         : ApiControllerBase
     {
 
@@ -155,6 +157,32 @@ namespace EmployeeLeaveManagement.API.Controllers
             return Ok(dashboard);
         }
 
+        #endregion
+
+        #region Organization Management
+        [HttpPatch("employees/{employeeId:guid}/role")]
+        public async Task<ActionResult> UpdateEmployeeRoleAsync(Guid employeeId, [FromBody] UpdateEmployeeRoleDto dto)
+        {
+            await _organizationService.UpdateEmployeeRoleAsync(employeeId, dto);
+
+            return NoContent();
+        }
+
+        [HttpPatch("employees/{employeeId:guid}/manager/{managerId:guid}")]
+        public async Task<ActionResult> AssignManagerAsync(Guid employeeId,Guid managerId)
+        {
+            await _organizationService.AssignManagerAsync(employeeId, managerId);
+
+            return NoContent();
+        }
+
+        [HttpPatch("employees/{employeeId:guid}/department/{departmentId:guid}")]
+        public async Task<ActionResult> AssignDepartmentAsync(Guid employeeId, Guid departmentId)
+        {
+            await _organizationService.AssignDepartmentAsync(employeeId, departmentId);
+
+            return NoContent();
+        }
         #endregion
     }
 }
