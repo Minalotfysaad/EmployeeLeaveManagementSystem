@@ -1,7 +1,9 @@
 ﻿using AutoMapper;
+using EmployeeLeaveManagement.Application.Abstractions.Caching;
 using EmployeeLeaveManagement.Application.Abstractions.Persistence;
 using EmployeeLeaveManagement.Application.Abstractions.Services;
 using EmployeeLeaveManagement.Application.Common.Models;
+using EmployeeLeaveManagement.Application.Common.Models.Caching;
 using EmployeeLeaveManagement.Application.DTOs.Approval;
 using EmployeeLeaveManagement.Application.DTOs.Employee;
 using EmployeeLeaveManagement.Application.DTOs.LeaveRequest;
@@ -17,7 +19,11 @@ using System.Threading.Tasks;
 
 namespace EmployeeLeaveManagement.Infrastructure.Services
 {
-    public sealed class ApprovalService(IUnitOfWork _unitOfWork, IMapper _mapper) : IApprovalService
+    public sealed class ApprovalService(
+        IUnitOfWork _unitOfWork,
+        ICacheService _cacheService,
+        IMapper _mapper)
+        : IApprovalService
     {
         public async Task<PagedResult<PendingLeaveRequestDto>> GetPendingManagerRequestsAsync(EmployeeQueryParameters parameters)
         {
@@ -58,6 +64,7 @@ namespace EmployeeLeaveManagement.Infrastructure.Services
 
             leaveRequest.Status = RequestStatus.ManagerApproved;
             await _unitOfWork.SaveChangesAsync();
+            await _cacheService.RemoveAsync(CacheKeys.HRDashboard);
         }
 
         public async Task ManagerRejectAsync(Guid managerId, Guid requestId, ApprovalDecisionDto decision)
@@ -75,6 +82,7 @@ namespace EmployeeLeaveManagement.Infrastructure.Services
             leaveRequest.Status = RequestStatus.RejectedByManager;
 
             await _unitOfWork.SaveChangesAsync();
+            await _cacheService.RemoveAsync(CacheKeys.HRDashboard);
         }
 
         public async Task HRApproveAsync(Guid hrId, Guid requestId, ApprovalDecisionDto decision)
@@ -98,6 +106,7 @@ namespace EmployeeLeaveManagement.Infrastructure.Services
             leaveRequest.Status = RequestStatus.HRApproved;
 
             await _unitOfWork.SaveChangesAsync();
+            await _cacheService.RemoveAsync(CacheKeys.HRDashboard);
         }
 
         public async Task HRRejectAsync(Guid hrId, Guid requestId, ApprovalDecisionDto decision)
@@ -116,6 +125,7 @@ namespace EmployeeLeaveManagement.Infrastructure.Services
             leaveRequest.Status = RequestStatus.RejectedByHR;
 
             await _unitOfWork.SaveChangesAsync();
+            await _cacheService.RemoveAsync(CacheKeys.HRDashboard);
         }
 
 

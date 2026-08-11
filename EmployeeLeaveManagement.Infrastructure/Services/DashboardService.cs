@@ -1,6 +1,8 @@
 ﻿using AutoMapper;
+using EmployeeLeaveManagement.Application.Abstractions.Caching;
 using EmployeeLeaveManagement.Application.Abstractions.Persistence;
 using EmployeeLeaveManagement.Application.Abstractions.Services;
+using EmployeeLeaveManagement.Application.Common.Models.Caching;
 using EmployeeLeaveManagement.Application.DTOs.Balance;
 using EmployeeLeaveManagement.Application.DTOs.Dashboard;
 using EmployeeLeaveManagement.Application.Exceptions;
@@ -17,6 +19,7 @@ namespace EmployeeLeaveManagement.Infrastructure.Services
 {
     public class DashboardService(
         IUnitOfWork _unitOfWork,
+        ICacheService _cacheService,
         IMapper _mapper)
         : IDashboardService 
     {
@@ -97,8 +100,15 @@ namespace EmployeeLeaveManagement.Infrastructure.Services
 
         }
 
-        public async Task<HRDashboardDto> GetHRDashboardAsync()
+        public async Task<HRDashboardDto> GetHRDashboardAsync() 
         {
+            //Check if cached
+            var cachedDashboard = await _cacheService.GetAsync<HRDashboardDto>(CacheKeys.HRDashboard);
+
+            if (cachedDashboard is not null)
+                return cachedDashboard;
+
+
             var employeeRepository = _unitOfWork.Repository<Employee>();
             var departmentRepository = _unitOfWork.Repository<Department>();
             var leaveRequestRepository = _unitOfWork.Repository<LeaveRequest>();
@@ -130,8 +140,8 @@ namespace EmployeeLeaveManagement.Infrastructure.Services
             var leaveRequestsThisMonth = await leaveRequestRepository.CountAsync(
                 new LeaveRequestsThisMonthSpecification( startOfMonth, startOfNextMonth));
 
-
-            return new HRDashboardDto
+            //Build dashboard
+            var dashboard = new HRDashboardDto
             {
                 TotalEmployees = totalEmployees,
                 TotalDepartments = totalDepartments,
@@ -141,6 +151,11 @@ namespace EmployeeLeaveManagement.Infrastructure.Services
                 UpcomingHolidays = upcomingHolidays,
                 LeaveRequestsThisMonth = leaveRequestsThisMonth
             };
+
+            //Cache dashboard
+            await _cacheService.SetAsync(CacheKeys.HRDashboard, dashboard, TimeSpan.FromMinutes(5));
+
+            return dashboard;
         }   
 
     }

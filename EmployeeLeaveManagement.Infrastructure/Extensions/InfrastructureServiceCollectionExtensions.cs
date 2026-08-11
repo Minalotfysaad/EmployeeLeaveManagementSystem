@@ -1,16 +1,19 @@
+using EmployeeLeaveManagement.Application.Abstractions.Caching;
+using EmployeeLeaveManagement.Application.Abstractions.Persistence;
 using EmployeeLeaveManagement.Application.Abstractions.Services;
 using EmployeeLeaveManagement.Domain.Entities;
 using EmployeeLeaveManagement.Infrastructure.Authentication;
+using EmployeeLeaveManagement.Infrastructure.Persistence.Caching;
 using EmployeeLeaveManagement.Infrastructure.Persistence.Context;
-using EmployeeLeaveManagement.Infrastructure.Services;
-using EmployeeLeaveManagement.Application.Abstractions.Persistence;
 using EmployeeLeaveManagement.Infrastructure.Persistence.Repositories;
+using EmployeeLeaveManagement.Infrastructure.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
+using StackExchange.Redis;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -58,7 +61,13 @@ namespace EmployeeLeaveManagement.Infrastructure.Extensions
                 options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
             }).AddJwtBearer();
 
+            // Register Redis
+            services.AddSingleton<IConnectionMultiplexer>(
+                ConnectionMultiplexer.Connect(
+                    _configuration.GetConnectionString("Redis")!));
+
             //Register Services
+            services.AddSingleton<ICacheService, RedisCacheService>();
             services.AddScoped<IUnitOfWork, UnitOfWork>();
             services.AddScoped<IAuthService, AuthService>();
             services.AddScoped<ITokenService, TokenService>();

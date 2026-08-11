@@ -1,7 +1,9 @@
 ﻿using AutoMapper;
+using EmployeeLeaveManagement.Application.Abstractions.Caching;
 using EmployeeLeaveManagement.Application.Abstractions.Persistence;
 using EmployeeLeaveManagement.Application.Abstractions.Services;
 using EmployeeLeaveManagement.Application.Common.Models;
+using EmployeeLeaveManagement.Application.Common.Models.Caching;
 using EmployeeLeaveManagement.Application.DTOs.Employee;
 using EmployeeLeaveManagement.Application.DTOs.Holiday;
 using EmployeeLeaveManagement.Application.Exceptions;
@@ -18,6 +20,7 @@ namespace EmployeeLeaveManagement.Infrastructure.Services
 {
     public class HolidayService(
         IUnitOfWork _unitOfWork,
+        ICacheService _cacheService,
         IMapper _mapper,
         IValidator<CreateHolidayDto> _createValidator,
         IValidator<UpdateHolidayDto> _updateValidator)
@@ -76,6 +79,7 @@ namespace EmployeeLeaveManagement.Infrastructure.Services
 
             await repository.AddAsync(holiday);
             await _unitOfWork.SaveChangesAsync();
+            await _cacheService.RemoveAsync(CacheKeys.HRDashboard);
 
             holiday = await repository.FirstOrDefaultAsync(new HolidayByIdSpecification(holiday.Id))
                 ?? throw new InvalidOperationException("Failed to reload holiday after creation.");
@@ -131,6 +135,7 @@ namespace EmployeeLeaveManagement.Infrastructure.Services
 
             // Save
             await _unitOfWork.SaveChangesAsync();
+            await _cacheService.RemoveAsync(CacheKeys.HRDashboard);
         }
 
         public async Task DeleteAsync(Guid id)
@@ -145,6 +150,7 @@ namespace EmployeeLeaveManagement.Infrastructure.Services
 
             repository.Remove(holiday);
             await _unitOfWork.SaveChangesAsync();
+            await _cacheService.RemoveAsync(CacheKeys.HRDashboard);
 
         }
     }

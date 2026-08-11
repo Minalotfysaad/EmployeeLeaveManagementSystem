@@ -1,5 +1,7 @@
-﻿using EmployeeLeaveManagement.Application.Abstractions.Persistence;
+﻿using EmployeeLeaveManagement.Application.Abstractions.Caching;
+using EmployeeLeaveManagement.Application.Abstractions.Persistence;
 using EmployeeLeaveManagement.Application.Abstractions.Services;
+using EmployeeLeaveManagement.Application.Common.Models.Caching;
 using EmployeeLeaveManagement.Application.DTOs.Auth;
 using EmployeeLeaveManagement.Application.Exceptions;
 using EmployeeLeaveManagement.Domain.Constants;
@@ -13,6 +15,7 @@ namespace EmployeeLeaveManagement.Infrastructure.Services
         UserManager<Employee> _userManager,
         SignInManager<Employee> _signInManager,
         IUnitOfWork _unitOfWork,
+        ICacheService _cacheService,
         ITokenService _tokenService,
         IValidator<RegisterRequestDto> registerValidator,
         IValidator<LoginRequestDto> _loginValidator)
@@ -71,6 +74,7 @@ namespace EmployeeLeaveManagement.Infrastructure.Services
             }
 
             await _unitOfWork.SaveChangesAsync();
+            await _cacheService.RemoveAsync(CacheKeys.HRDashboard);
 
 
             //Return

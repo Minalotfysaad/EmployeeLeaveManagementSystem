@@ -1,7 +1,9 @@
 ﻿using AutoMapper;
+using EmployeeLeaveManagement.Application.Abstractions.Caching;
 using EmployeeLeaveManagement.Application.Abstractions.Persistence;
 using EmployeeLeaveManagement.Application.Abstractions.Services;
 using EmployeeLeaveManagement.Application.Common.Models;
+using EmployeeLeaveManagement.Application.Common.Models.Caching;
 using EmployeeLeaveManagement.Application.DTOs.Department;
 using EmployeeLeaveManagement.Application.DTOs.Employee;
 using EmployeeLeaveManagement.Application.Exceptions;
@@ -18,6 +20,7 @@ namespace EmployeeLeaveManagement.Infrastructure.Services
 {
     public class DepartmentService(
         IUnitOfWork _unitOfWork,
+        ICacheService _cacheService,
         IMapper _mapper,
         IValidator<CreateDepartmentDto> _createValidator,
         IValidator<UpdateDepartmentDto> _updateValidator)
@@ -79,6 +82,7 @@ namespace EmployeeLeaveManagement.Infrastructure.Services
             // Save
             await repository.AddAsync(department);
             await _unitOfWork.SaveChangesAsync();
+            await _cacheService.RemoveAsync(CacheKeys.HRDashboard);
 
             return _mapper.Map<DepartmentDetailsDto>(
                 department);
@@ -118,6 +122,7 @@ namespace EmployeeLeaveManagement.Infrastructure.Services
 
             //Save
             await _unitOfWork.SaveChangesAsync();
+            await _cacheService.RemoveAsync(CacheKeys.HRDashboard);
         }
 
         public async Task DeleteAsync(Guid id)
@@ -139,6 +144,7 @@ namespace EmployeeLeaveManagement.Infrastructure.Services
             repository.Remove(department);
 
             await _unitOfWork.SaveChangesAsync();
+            await _cacheService.RemoveAsync(CacheKeys.HRDashboard);
         }
     }
 }

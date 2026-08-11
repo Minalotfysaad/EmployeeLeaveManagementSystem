@@ -1,25 +1,27 @@
-﻿using EmployeeLeaveManagement.Application.Abstractions.Services;
+﻿using AutoMapper;
+using EmployeeLeaveManagement.Application.Abstractions.Caching;
+using EmployeeLeaveManagement.Application.Abstractions.Persistence;
+using EmployeeLeaveManagement.Application.Abstractions.Services;
+using EmployeeLeaveManagement.Application.Common.Models;
+using EmployeeLeaveManagement.Application.Common.Models.Caching;
 using EmployeeLeaveManagement.Application.DTOs.Employee;
+using EmployeeLeaveManagement.Application.Exceptions;
+using EmployeeLeaveManagement.Domain.Entities;
+using EmployeeLeaveManagement.Infrastructure.Persistence.Specifications;
+using FluentValidation;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-using EmployeeLeaveManagement.Application.Common.Models;
-using Microsoft.AspNetCore.Identity;
-using EmployeeLeaveManagement.Domain.Entities;
-using AutoMapper;
-using FluentValidation;
-using EmployeeLeaveManagement.Application.Exceptions;
-using Microsoft.EntityFrameworkCore;
-using EmployeeLeaveManagement.Application.Abstractions.Persistence;
-using EmployeeLeaveManagement.Infrastructure.Persistence.Specifications;
-
 namespace EmployeeLeaveManagement.Infrastructure.Services
 {
     public class EmployeeManagementService(
         IUnitOfWork _unitOfWork,
+        ICacheService _cacheService,
         IMapper _mapper,
         IValidator<UpdateEmployeeDto> _updateValidator
         ) : IEmployeeManagementService
@@ -67,6 +69,7 @@ namespace EmployeeLeaveManagement.Infrastructure.Services
             //Update
             _mapper.Map(dto, employee);
             await _unitOfWork.SaveChangesAsync();
+            await _cacheService.RemoveAsync(CacheKeys.HRDashboard);
         }
 
         public async Task DeleteEmployeeAsync(Guid id)
@@ -79,6 +82,7 @@ namespace EmployeeLeaveManagement.Infrastructure.Services
             repository.Remove(employee);
 
             await _unitOfWork.SaveChangesAsync();
+            await _cacheService.RemoveAsync(CacheKeys.HRDashboard);
         }
     }
 }
