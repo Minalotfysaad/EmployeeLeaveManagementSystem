@@ -6,6 +6,7 @@ using EmployeeLeaveManagement.Application.Exceptions;
 using EmployeeLeaveManagement.Domain.Entities;
 using EmployeeLeaveManagement.Infrastructure.Persistence.Specifications;
 using FluentValidation;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,6 +18,7 @@ namespace EmployeeLeaveManagement.Infrastructure.Services
     public class BalanceService(
         IUnitOfWork _unitOfWork,
         IMapper _mapper,
+        ILogger<BalanceService> _logger,
         IValidator<UpdateBalanceDto> _updateValidator)
         : IBalanceService
     {
@@ -68,6 +70,12 @@ namespace EmployeeLeaveManagement.Infrastructure.Services
 
             //Save
             await _unitOfWork.SaveChangesAsync();
+
+            //Log
+            _logger.LogInformation("Employee leave balance updated. EmployeeId: {EmployeeId}, LeaveTypeId: {LeaveTypeId}, RemainingDays: {RemainingDays}",
+                employeeId,
+                leaveTypeId,
+                balance.RemainingDays);
         }
 
         #region Helpers

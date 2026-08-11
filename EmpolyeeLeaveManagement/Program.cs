@@ -5,6 +5,7 @@ using EmployeeLeaveManagement.Infrastructure.Extensions;
 using EmployeeLeaveManagement.Infrastructure.Persistence.Seed;
 using EmployeeLeaveManagement.Infrastructure.Persistence.Context;
 using Microsoft.OpenApi;
+using Serilog;
 
 namespace EmpolyeeLeaveManagement
 {
@@ -13,6 +14,15 @@ namespace EmpolyeeLeaveManagement
         public static async Task Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
+
+            //Register Serilog
+            Log.Logger = new LoggerConfiguration()
+                .MinimumLevel.Information()
+                .WriteTo.Console()
+                .WriteTo.File("Logs/log-.txt", rollingInterval: RollingInterval.Day)
+                .CreateLogger();
+
+            builder.Host.UseSerilog();
 
             // Add services to the container.
 
@@ -51,6 +61,12 @@ namespace EmpolyeeLeaveManagement
             }
 
             app.UseExceptionHandler();
+
+            app.UseSerilogRequestLogging(options =>
+            {
+                options.MessageTemplate =
+                    "HTTP {RequestMethod} {RequestPath} responded {StatusCode} in {Elapsed:0.0000} ms";
+            });
 
             app.UseHttpsRedirection();
 

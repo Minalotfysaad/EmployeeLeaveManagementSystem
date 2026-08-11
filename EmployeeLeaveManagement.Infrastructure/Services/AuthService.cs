@@ -8,6 +8,7 @@ using EmployeeLeaveManagement.Domain.Constants;
 using EmployeeLeaveManagement.Domain.Entities;
 using FluentValidation;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.Logging;
 
 namespace EmployeeLeaveManagement.Infrastructure.Services
 {
@@ -17,6 +18,7 @@ namespace EmployeeLeaveManagement.Infrastructure.Services
         IUnitOfWork _unitOfWork,
         ICacheService _cacheService,
         ITokenService _tokenService,
+        ILogger<AuthService> _logger,
         IValidator<RegisterRequestDto> registerValidator,
         IValidator<LoginRequestDto> _loginValidator)
         : IAuthService
@@ -106,8 +108,12 @@ namespace EmployeeLeaveManagement.Infrastructure.Services
             var signInResult = await _signInManager.CheckPasswordSignInAsync(user, dto.Password, false);
             if (!signInResult.Succeeded)
             {
+                _logger.LogWarning("Failed login attempt for email {Email}", dto.Email);
+
                 throw new InvalidCredentialsException();
             }
+
+            _logger.LogInformation("Employee logged in successfully. EmployeeId: {EmployeeId}",user.Id);
 
             //Return
             return new AuthResponseDto()

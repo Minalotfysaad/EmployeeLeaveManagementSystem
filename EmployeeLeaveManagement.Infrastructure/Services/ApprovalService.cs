@@ -11,6 +11,7 @@ using EmployeeLeaveManagement.Application.Exceptions;
 using EmployeeLeaveManagement.Domain.Entities;
 using EmployeeLeaveManagement.Domain.Enums;
 using EmployeeLeaveManagement.Infrastructure.Persistence.Specifications;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -22,7 +23,8 @@ namespace EmployeeLeaveManagement.Infrastructure.Services
     public sealed class ApprovalService(
         IUnitOfWork _unitOfWork,
         ICacheService _cacheService,
-        IMapper _mapper)
+        IMapper _mapper,
+        ILogger<ApprovalService> _logger)
         : IApprovalService
     {
         public async Task<PagedResult<PendingLeaveRequestDto>> GetPendingManagerRequestsAsync(EmployeeQueryParameters parameters)
@@ -61,9 +63,14 @@ namespace EmployeeLeaveManagement.Infrastructure.Services
             approval.ManagerComment = decision.Comment;
             approval.ManagerDecisionDate = DateTime.UtcNow;
 
-
             leaveRequest.Status = RequestStatus.ManagerApproved;
+
             await _unitOfWork.SaveChangesAsync();
+
+            _logger.LogInformation("Leave request approved by manager. RequestId: {RequestId}, ManagerId: {ManagerId}",
+                requestId,
+                managerId);
+
             await _cacheService.RemoveAsync(CacheKeys.HRDashboard);
         }
 
@@ -82,6 +89,12 @@ namespace EmployeeLeaveManagement.Infrastructure.Services
             leaveRequest.Status = RequestStatus.RejectedByManager;
 
             await _unitOfWork.SaveChangesAsync();
+
+            _logger.LogInformation(
+                "Leave request rejected by manager. RequestId: {RequestId}, ManagerId: {ManagerId}",
+                requestId,
+                managerId);
+
             await _cacheService.RemoveAsync(CacheKeys.HRDashboard);
         }
 
@@ -106,6 +119,12 @@ namespace EmployeeLeaveManagement.Infrastructure.Services
             leaveRequest.Status = RequestStatus.HRApproved;
 
             await _unitOfWork.SaveChangesAsync();
+
+            _logger.LogInformation(
+            "Leave request approved by HR. RequestId: {RequestId}, HRId: {HRId}",
+                requestId,
+                hrId);
+
             await _cacheService.RemoveAsync(CacheKeys.HRDashboard);
         }
 
@@ -125,6 +144,12 @@ namespace EmployeeLeaveManagement.Infrastructure.Services
             leaveRequest.Status = RequestStatus.RejectedByHR;
 
             await _unitOfWork.SaveChangesAsync();
+
+            _logger.LogInformation(
+    "Leave request rejected by HR. RequestId: {RequestId}, HRId: {HRId}",
+                requestId,
+                hrId);
+
             await _cacheService.RemoveAsync(CacheKeys.HRDashboard);
         }
 

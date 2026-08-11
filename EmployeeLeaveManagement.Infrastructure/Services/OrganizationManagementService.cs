@@ -6,6 +6,7 @@ using EmployeeLeaveManagement.Domain.Constants;
 using EmployeeLeaveManagement.Domain.Entities;
 using EmployeeLeaveManagement.Infrastructure.Persistence.Specifications;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,6 +17,7 @@ namespace EmployeeLeaveManagement.Infrastructure.Services
 {
     public class OrganizationManagementService(
         IUnitOfWork _unitOfWork,
+        ILogger<OrganizationManagementService> _logger,
         UserManager<Employee> _userManager)
         : IOrganizationManagementService
     {
@@ -77,6 +79,10 @@ namespace EmployeeLeaveManagement.Infrastructure.Services
                 throw new BadRequestException(addResult.Errors
                         .Select(e => e.Description)
                         .ToList());
+
+            _logger.LogInformation("Role assigned to employee. EmployeeId: {EmployeeId}, Role: {Role}",
+                employeeId,
+                role);
         }
 
         public async Task AssignManagerAsync(Guid employeeId, Guid managerId)
@@ -102,6 +108,11 @@ namespace EmployeeLeaveManagement.Infrastructure.Services
             employee.ManagerId = managerId;
 
             await _unitOfWork.SaveChangesAsync();
+
+            _logger.LogInformation(
+                "Manager assigned to employee. ManagerId: {ManagerId}, EmployeeId: {EmployeeId}",
+                managerId,
+                employeeId);
         }
 
         public async Task AssignDepartmentAsync(Guid employeeId, Guid departmentId)

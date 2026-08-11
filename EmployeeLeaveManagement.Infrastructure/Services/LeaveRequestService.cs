@@ -9,6 +9,7 @@ using EmployeeLeaveManagement.Domain.Entities;
 using EmployeeLeaveManagement.Domain.Enums;
 using EmployeeLeaveManagement.Infrastructure.Persistence.Specifications;
 using FluentValidation;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,6 +20,7 @@ namespace EmployeeLeaveManagement.Infrastructure.Services
 {
     public class LeaveRequestService(IUnitOfWork _unitOfWork,
         IMapper _mapper,
+        ILogger<LeaveRequestService> _logger,
         IValidator<CreateLeaveRequestDto> _createValidator)
         : ILeaveRequestService
     {
@@ -74,6 +76,12 @@ namespace EmployeeLeaveManagement.Infrastructure.Services
 
             await _unitOfWork.SaveChangesAsync();
 
+            _logger.LogInformation(
+                "Leave request created. RequestId: {RequestId}, EmployeeId: {EmployeeId}, LeaveTypeId: {LeaveTypeId}",
+                leaveRequest.Id,
+                employeeId,
+                leaveRequest.LeaveTypeId);
+
             //Return LeaveRequestDetailsDto
             return _mapper.Map<LeaveRequestDetailsDto>(leaveRequest);
         }
@@ -114,6 +122,11 @@ namespace EmployeeLeaveManagement.Infrastructure.Services
             leaveRequest.Status = RequestStatus.Cancelled;
 
             await _unitOfWork.SaveChangesAsync();
+
+            _logger.LogInformation(
+                "Leave request cancelled. RequestId: {RequestId}, EmployeeId: {EmployeeId}",
+                requestId,
+                employeeId);
         }
     }
 }

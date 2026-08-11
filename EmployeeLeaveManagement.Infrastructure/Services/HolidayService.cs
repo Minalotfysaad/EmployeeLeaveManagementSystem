@@ -10,6 +10,7 @@ using EmployeeLeaveManagement.Application.Exceptions;
 using EmployeeLeaveManagement.Domain.Entities;
 using EmployeeLeaveManagement.Infrastructure.Persistence.Specifications;
 using FluentValidation;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -22,6 +23,7 @@ namespace EmployeeLeaveManagement.Infrastructure.Services
         IUnitOfWork _unitOfWork,
         ICacheService _cacheService,
         IMapper _mapper,
+        ILogger<HolidayService> _logger,
         IValidator<CreateHolidayDto> _createValidator,
         IValidator<UpdateHolidayDto> _updateValidator)
         : IHolidayService
@@ -79,6 +81,12 @@ namespace EmployeeLeaveManagement.Infrastructure.Services
 
             await repository.AddAsync(holiday);
             await _unitOfWork.SaveChangesAsync();
+
+            _logger.LogInformation(
+            "Holiday created. HolidayId: {HolidayId}, CreatedBy: {CreatedBy}",
+            holiday.Id,
+            hrId);
+
             await _cacheService.RemoveAsync(CacheKeys.HRDashboard);
 
             holiday = await repository.FirstOrDefaultAsync(new HolidayByIdSpecification(holiday.Id))
@@ -123,10 +131,7 @@ namespace EmployeeLeaveManagement.Infrastructure.Services
                 dto.EndDate);
 
             if (await repository.AnyAsync(duplicateSpecification))
-            {
-                throw new BadRequestException(
-                    "Another holiday with the same name and dates already exists.");
-            }
+                throw new BadRequestException("Another holiday with the same name and dates already exists.");
 
             // Update
             holiday.Name = dto.Name;
@@ -135,6 +140,9 @@ namespace EmployeeLeaveManagement.Infrastructure.Services
 
             // Save
             await _unitOfWork.SaveChangesAsync();
+
+            _logger.LogInformation("Holiday updated. HolidayId: {HolidayId}", id);
+
             await _cacheService.RemoveAsync(CacheKeys.HRDashboard);
         }
 
@@ -150,6 +158,9 @@ namespace EmployeeLeaveManagement.Infrastructure.Services
 
             repository.Remove(holiday);
             await _unitOfWork.SaveChangesAsync();
+
+            _logger.LogInformation("Holiday deleted. HolidayId: {HolidayId}", id);
+
             await _cacheService.RemoveAsync(CacheKeys.HRDashboard);
 
         }

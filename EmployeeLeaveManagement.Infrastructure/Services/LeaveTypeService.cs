@@ -10,6 +10,8 @@ using EmployeeLeaveManagement.Domain.Entities;
 using EmployeeLeaveManagement.Infrastructure.Persistence.Repositories;
 using EmployeeLeaveManagement.Infrastructure.Persistence.Specifications;
 using FluentValidation;
+using Microsoft.Extensions.Logging;
+using StackExchange.Redis;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -22,6 +24,7 @@ namespace EmployeeLeaveManagement.Infrastructure.Services
     public class LeaveTypeService(
         IUnitOfWork _unitOfWork,
         IMapper _mapper,
+        ILogger<LeaveTypeService> _logger,
         IValidator<CreateLeaveTypeDto> _createValidator,
         IValidator<UpdateLeaveTypeDto> _updateValidator)
         : ILeaveTypeService
@@ -82,6 +85,10 @@ namespace EmployeeLeaveManagement.Infrastructure.Services
             await repository.AddAsync(leavetype);
             await _unitOfWork.SaveChangesAsync();
 
+            _logger.LogInformation("Leave type created. LeaveTypeId: {LeaveTypeId}, Name: {LeaveTypeName}",
+            leavetype.Id,
+            leavetype.Name);
+
             //Return
             return _mapper.Map<LeaveTypeDetailsDto>(leavetype);
 
@@ -120,6 +127,10 @@ namespace EmployeeLeaveManagement.Infrastructure.Services
             leaveType.DefaultDays = dto.DefaultDays;
 
             await _unitOfWork.SaveChangesAsync();
+
+            _logger.LogInformation("Leave type updated. LeaveTypeId: {LeaveTypeId}, Name: {LeaveTypeName}",
+            leaveType.Id,
+            leaveType.Name);
         }
 
         public async Task DeleteAsync(Guid id)
@@ -146,9 +157,15 @@ namespace EmployeeLeaveManagement.Infrastructure.Services
                 throw new BadRequestException("Cannot delete a leave type that is already in use.");
             }
 
+            var leaveTypeName = leaveType.Name;
+
             //Remove
             repository.Remove(leaveType);
             await _unitOfWork.SaveChangesAsync();
+
+            _logger.LogInformation("Leave type deleted. LeaveTypeId: {LeaveTypeId}, Name: {LeaveTypeName}",
+                leaveType.Id,
+                leaveTypeName);
         }
     }
 }
