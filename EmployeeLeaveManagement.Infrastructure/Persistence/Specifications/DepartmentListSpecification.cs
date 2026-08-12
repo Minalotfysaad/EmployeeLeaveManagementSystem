@@ -17,7 +17,7 @@ namespace EmployeeLeaveManagement.Infrastructure.Persistence.Specifications
             : base()
         {
             ApplyOrderBy(d => d.Name);
-
+            ApplyNoTracking();
             ApplyPaging(
                 (parameters.Page - 1) * parameters.PageSize,
                 parameters.PageSize);

@@ -15,12 +15,14 @@ namespace EmployeeLeaveManagement.Infrastructure.Persistence.Specifications
                          lb.LeaveTypeId == leaveTypeId)
         {
             AddInclude(b => b.LeaveType);
+            ApplyNoTracking();
         }
 
         public EmployeeLeaveBalanceSpecification(Guid employeeId)
             : base(lb => lb.EmployeeId == employeeId)
         {
             AddInclude(b => b.LeaveType);
+            ApplyNoTracking();
             ApplyOrderBy(b => b.LeaveType!.Name);
         }
     }

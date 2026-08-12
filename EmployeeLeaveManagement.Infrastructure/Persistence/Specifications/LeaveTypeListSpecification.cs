@@ -13,6 +13,7 @@ namespace EmployeeLeaveManagement.Infrastructure.Persistence.Specifications
     {
         public LeaveTypeListSpecification(EmployeeQueryParameters parameters) : base()
         {
+            ApplyNoTracking();
             ApplyOrderBy(l  => l.Name);
             ApplyPaging((parameters.Page - 1) * parameters.PageSize,parameters.PageSize);
         }

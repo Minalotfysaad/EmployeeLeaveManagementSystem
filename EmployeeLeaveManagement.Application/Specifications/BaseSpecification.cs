@@ -14,18 +14,13 @@ namespace EmployeeLeaveManagement.Application.Specifications
 
         //Properties
         public Expression<Func<T, bool>>? Criteria { get; protected set; }
-
         public IReadOnlyList<Expression<Func<T, object>>> Includes => _includes.AsReadOnly();
-
         public Expression<Func<T, object>>? OrderBy { get; protected set; }
-
         public Expression<Func<T, object>>? OrderByDescending { get; protected set; }
-
         public int Skip { get; protected set; }
-
         public int Take { get; protected set; }
-
         public bool IsPagingEnabled { get; protected set; }
+        public bool AsNoTracking { get; protected set; }
 
 
         //Ctors
@@ -42,6 +37,11 @@ namespace EmployeeLeaveManagement.Application.Specifications
         protected void AddInclude(Expression<Func<T, object>> includeExpression)
         {
             _includes.Add(includeExpression);
+        }
+
+        protected void ApplyNoTracking()
+        {
+            AsNoTracking = true;
         }
 
         protected void ApplyOrderBy(Expression<Func<T, object>> orderByExpression)

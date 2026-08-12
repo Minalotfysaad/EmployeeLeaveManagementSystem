@@ -15,8 +15,8 @@ namespace EmployeeLeaveManagement.Infrastructure.Persistence.Specifications
         public HolidayListSpecification(EmployeeQueryParameters parameters) : base()
         {
             AddInclude(h => h.HR);
+            ApplyNoTracking();
             ApplyOrderBy(h => h.StartDate);
-
             ApplyPaging((parameters.Page - 1) * parameters.PageSize, parameters.PageSize);
         }
     }

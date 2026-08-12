@@ -13,6 +13,7 @@ namespace EmployeeLeaveManagement.Application.Specifications
         IReadOnlyList<Expression<Func<T, object>>> Includes { get; }
         Expression<Func<T, object>>? OrderBy { get; }
         Expression<Func<T, object>>? OrderByDescending { get; }
+        public bool AsNoTracking { get; protected set; }
 
         //Pagination
         int Skip { get; }

@@ -27,6 +27,12 @@ namespace EmployeeLeaveManagement.Application.Specifications
                 query = query.Include(includeExpression);
             }
 
+            //As No Tracking
+            if (specification.AsNoTracking)
+            {
+                query = query.AsNoTracking();
+            }
+
             // Ordering
             if (specification.OrderBy is not null)
             {
