@@ -1,10 +1,10 @@
-﻿using EmployeeLeaveManagement.Application.Abstractions.Persistence;
-using EmployeeLeaveManagement.Application.Abstractions.Services;
-using EmployeeLeaveManagement.Application.DTOs.RoleManagement;
-using EmployeeLeaveManagement.Application.Exceptions;
-using EmployeeLeaveManagement.Domain.Constants;
-using EmployeeLeaveManagement.Domain.Entities;
-using EmployeeLeaveManagement.Infrastructure.Persistence.Specifications;
+﻿using Leavo.Application.Abstractions.Persistence;
+using Leavo.Application.Abstractions.Services;
+using Leavo.Application.DTOs.RoleManagement;
+using Leavo.Application.Exceptions;
+using Leavo.Domain.Constants;
+using Leavo.Domain.Entities;
+using Leavo.Infrastructure.Persistence.Specifications;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Logging;
 using System;
@@ -13,7 +13,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace EmployeeLeaveManagement.Infrastructure.Services
+namespace Leavo.Infrastructure.Services
 {
     public class OrganizationManagementService(
         IUnitOfWork _unitOfWork,

@@ -1,6 +1,6 @@
-using EmployeeLeaveManagement.Domain.Constants;
-using EmployeeLeaveManagement.Domain.Entities;
-using EmployeeLeaveManagement.Infrastructure.Authentication;
+﻿using Leavo.Domain.Constants;
+using Leavo.Domain.Entities;
+using Leavo.Infrastructure.Authentication;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
@@ -10,7 +10,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace EmployeeLeaveManagement.Infrastructure.Persistence.Seed
+namespace Leavo.Infrastructure.Persistence.Seed
 {
     public static class IdentitySeeder
     {

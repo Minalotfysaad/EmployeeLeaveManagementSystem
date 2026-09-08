@@ -1,21 +1,21 @@
 ﻿using AutoMapper;
-using EmployeeLeaveManagement.Application.Abstractions.Caching;
-using EmployeeLeaveManagement.Application.Abstractions.Persistence;
-using EmployeeLeaveManagement.Application.Abstractions.Services;
-using EmployeeLeaveManagement.Application.Common.Models.Caching;
-using EmployeeLeaveManagement.Application.DTOs.Balance;
-using EmployeeLeaveManagement.Application.DTOs.Dashboard;
-using EmployeeLeaveManagement.Application.Exceptions;
-using EmployeeLeaveManagement.Domain.Entities;
-using EmployeeLeaveManagement.Domain.Enums;
-using EmployeeLeaveManagement.Infrastructure.Persistence.Specifications;
+using Leavo.Application.Abstractions.Caching;
+using Leavo.Application.Abstractions.Persistence;
+using Leavo.Application.Abstractions.Services;
+using Leavo.Application.Common.Models.Caching;
+using Leavo.Application.DTOs.Balance;
+using Leavo.Application.DTOs.Dashboard;
+using Leavo.Application.Exceptions;
+using Leavo.Domain.Entities;
+using Leavo.Domain.Enums;
+using Leavo.Infrastructure.Persistence.Specifications;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace EmployeeLeaveManagement.Infrastructure.Services
+namespace Leavo.Infrastructure.Services
 {
     public class DashboardService(
         IUnitOfWork _unitOfWork,

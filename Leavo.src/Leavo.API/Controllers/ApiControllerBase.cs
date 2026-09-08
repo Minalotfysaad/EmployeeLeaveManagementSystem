@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 
-namespace EmployeeLeaveManagement.API.Controllers
+namespace Leavo.API.Controllers
 {
     public abstract class ApiControllerBase : ControllerBase
     {

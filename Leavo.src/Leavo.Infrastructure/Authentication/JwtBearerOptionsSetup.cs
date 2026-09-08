@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace EmployeeLeaveManagement.Infrastructure.Authentication
+namespace Leavo.Infrastructure.Authentication
 {
     public sealed class JwtBearerOptionsSetup(IOptions<JwtSettings> jwtSettings) : IConfigureNamedOptions<JwtBearerOptions>
     {

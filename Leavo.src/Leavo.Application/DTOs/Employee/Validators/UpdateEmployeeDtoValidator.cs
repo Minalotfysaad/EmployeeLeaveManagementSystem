@@ -1,6 +1,6 @@
-using FluentValidation;
+﻿using FluentValidation;
 
-namespace EmployeeLeaveManagement.Application.DTOs.Employee.Validators
+namespace Leavo.Application.DTOs.Employee.Validators
 {
     public class UpdateEmployeeDtoValidator : AbstractValidator<UpdateEmployeeDto>
     {

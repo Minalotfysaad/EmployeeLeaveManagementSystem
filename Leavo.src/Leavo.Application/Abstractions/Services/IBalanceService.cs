@@ -1,11 +1,11 @@
-﻿using EmployeeLeaveManagement.Application.DTOs.Balance;
+﻿using Leavo.Application.DTOs.Balance;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace EmployeeLeaveManagement.Application.Abstractions.Services
+namespace Leavo.Application.Abstractions.Services
 {
     public interface IBalanceService
     {

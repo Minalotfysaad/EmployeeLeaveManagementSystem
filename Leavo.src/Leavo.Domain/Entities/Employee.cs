@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
 
-namespace EmployeeLeaveManagement.Domain.Entities
+namespace Leavo.Domain.Entities
 {
     public class Employee : IdentityUser<Guid>
     {

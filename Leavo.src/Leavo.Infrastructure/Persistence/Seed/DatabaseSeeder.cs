@@ -1,5 +1,5 @@
-using EmployeeLeaveManagement.Domain.Entities;
-using EmployeeLeaveManagement.Infrastructure.Persistence.Context;
+﻿using Leavo.Domain.Entities;
+using Leavo.Infrastructure.Persistence.Context;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -7,18 +7,18 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace EmployeeLeaveManagement.Infrastructure.Persistence.Seed
+namespace Leavo.Infrastructure.Persistence.Seed
 {
     public static class DatabaseSeeder
     {
-        public static async Task SeedAsync(EmployeeLeaveManagementDbContext context)
+        public static async Task SeedAsync(LeavoDbContext context)
         {
             await SeedDepartmentsAsync(context);
             await SeedLeaveTypesAsync(context);
             await SeedHolidaysAsync(context);
         }
 
-        private static async Task SeedDepartmentsAsync(EmployeeLeaveManagementDbContext context)
+        private static async Task SeedDepartmentsAsync(LeavoDbContext context)
         {
             if (await context.Departments.AnyAsync())
                 return;
@@ -55,7 +55,7 @@ namespace EmployeeLeaveManagement.Infrastructure.Persistence.Seed
             await context.SaveChangesAsync();
         }
 
-        private static async Task SeedLeaveTypesAsync(EmployeeLeaveManagementDbContext context)
+        private static async Task SeedLeaveTypesAsync(LeavoDbContext context)
         {
             if (await context.LeaveTypes.AnyAsync())
                 return;
@@ -85,7 +85,7 @@ namespace EmployeeLeaveManagement.Infrastructure.Persistence.Seed
             await context.SaveChangesAsync();
         }
 
-        private static async Task SeedHolidaysAsync(EmployeeLeaveManagementDbContext context)
+        private static async Task SeedHolidaysAsync(LeavoDbContext context)
         {
             if (await context.Holidays.AnyAsync())
                 return;

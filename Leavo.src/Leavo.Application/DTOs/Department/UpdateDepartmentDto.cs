@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace EmployeeLeaveManagement.Application.DTOs.Department
+namespace Leavo.Application.DTOs.Department
 {
     public sealed class UpdateDepartmentDto
     {

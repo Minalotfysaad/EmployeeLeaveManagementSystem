@@ -1,7 +1,7 @@
-﻿using EmployeeLeaveManagement.Application.Abstractions.Caching;
+﻿using Leavo.Application.Abstractions.Caching;
 using Microsoft.AspNetCore.Mvc;
 
-namespace EmployeeLeaveManagement.API.Controllers
+namespace Leavo.API.Controllers
 {
     [ApiController]
     public class RedisTestController(ICacheService _cacheService) : ApiControllerBase

@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace EmployeeLeaveManagement.Application.Exceptions
+namespace Leavo.Application.Exceptions
 {
     public sealed class InvalidCredentialsException() : Exception("Invalid credentials")
     {

@@ -1,11 +1,11 @@
-﻿using EmployeeLeaveManagement.Application.Common.Models;
+﻿using Leavo.Application.Common.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace EmployeeLeaveManagement.Application.DTOs.Employee
+namespace Leavo.Application.DTOs.Employee
 {
     public sealed class EmployeeQueryParameters : QueryParameters
     {

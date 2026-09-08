@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace EmployeeLeaveManagement.Domain.Common
+namespace Leavo.Domain.Common
 {
     public abstract class BaseEntity<TKey>
     {

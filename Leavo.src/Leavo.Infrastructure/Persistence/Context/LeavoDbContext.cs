@@ -1,4 +1,4 @@
-﻿using EmployeeLeaveManagement.Domain.Entities;
+﻿using Leavo.Domain.Entities;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
@@ -8,20 +8,20 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace EmployeeLeaveManagement.Infrastructure.Persistence.Context
+namespace Leavo.Infrastructure.Persistence.Context
 {
-    public class EmployeeLeaveManagementDbContext : IdentityDbContext<Employee, IdentityRole<Guid>, Guid>
+    public class LeavoDbContext : IdentityDbContext<Employee, IdentityRole<Guid>, Guid>
     {
 
         //ctor
-        public EmployeeLeaveManagementDbContext(DbContextOptions<EmployeeLeaveManagementDbContext> options): base(options)
+        public LeavoDbContext(DbContextOptions<LeavoDbContext> options): base(options)
         {
         }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
-            builder.ApplyConfigurationsFromAssembly(typeof(EmployeeLeaveManagementDbContext).Assembly);
+            builder.ApplyConfigurationsFromAssembly(typeof(LeavoDbContext).Assembly);
         }
 
         //DbSets

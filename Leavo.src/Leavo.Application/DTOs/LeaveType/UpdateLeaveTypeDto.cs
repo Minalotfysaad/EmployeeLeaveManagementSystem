@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace EmployeeLeaveManagement.Application.DTOs.LeaveType
+namespace Leavo.Application.DTOs.LeaveType
 {
     public class UpdateLeaveTypeDto
     {

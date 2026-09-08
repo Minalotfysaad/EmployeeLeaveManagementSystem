@@ -1,4 +1,4 @@
-﻿using EmployeeLeaveManagement.Application.DTOs.LeaveType;
+﻿using Leavo.Application.DTOs.LeaveType;
 using FluentValidation;
 using System;
 using System.Collections.Generic;
@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace EmployeeLeaveManagement.Application.Validators.LeaveType
+namespace Leavo.Application.Validators.LeaveType
 {
     public sealed class UpdateLeaveTypeDtoValidator : AbstractValidator<UpdateLeaveTypeDto>
     {

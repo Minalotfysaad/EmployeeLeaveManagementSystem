@@ -1,4 +1,4 @@
-using EmployeeLeaveManagement.Application.DTOs.Holiday;
+﻿using Leavo.Application.DTOs.Holiday;
 using FluentValidation;
 using System;
 using System.Collections.Generic;
@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace EmployeeLeaveManagement.Application.Validators.Holiday
+namespace Leavo.Application.Validators.Holiday
 {
     public sealed class UpdateHolidayDtoValidator : AbstractValidator<UpdateHolidayDto>
     {

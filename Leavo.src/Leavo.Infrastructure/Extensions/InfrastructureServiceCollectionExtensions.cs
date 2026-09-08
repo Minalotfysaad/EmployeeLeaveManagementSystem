@@ -1,12 +1,12 @@
-using EmployeeLeaveManagement.Application.Abstractions.Caching;
-using EmployeeLeaveManagement.Application.Abstractions.Persistence;
-using EmployeeLeaveManagement.Application.Abstractions.Services;
-using EmployeeLeaveManagement.Domain.Entities;
-using EmployeeLeaveManagement.Infrastructure.Authentication;
-using EmployeeLeaveManagement.Infrastructure.Persistence.Caching;
-using EmployeeLeaveManagement.Infrastructure.Persistence.Context;
-using EmployeeLeaveManagement.Infrastructure.Persistence.Repositories;
-using EmployeeLeaveManagement.Infrastructure.Services;
+﻿using Leavo.Application.Abstractions.Caching;
+using Leavo.Application.Abstractions.Persistence;
+using Leavo.Application.Abstractions.Services;
+using Leavo.Domain.Entities;
+using Leavo.Infrastructure.Authentication;
+using Leavo.Infrastructure.Persistence.Caching;
+using Leavo.Infrastructure.Persistence.Context;
+using Leavo.Infrastructure.Persistence.Repositories;
+using Leavo.Infrastructure.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -20,14 +20,14 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace EmployeeLeaveManagement.Infrastructure.Extensions
+namespace Leavo.Infrastructure.Extensions
 {
     public static class InfrastructureServiceCollectionExtensions
     {
         public static IServiceCollection AddInfrastructureServices(this IServiceCollection services, IConfiguration _configuration)
         {
             //Register DbContext
-            services.AddDbContext<EmployeeLeaveManagementDbContext>(options =>
+            services.AddDbContext<LeavoDbContext>(options =>
             {
                 options.UseSqlServer(_configuration.GetConnectionString("DefaultConnection"));
             });
@@ -44,7 +44,7 @@ namespace EmployeeLeaveManagement.Infrastructure.Extensions
             })
                 .AddRoles<IdentityRole<Guid>>()
                 .AddSignInManager<SignInManager<Employee>>()
-                .AddEntityFrameworkStores<EmployeeLeaveManagementDbContext>();
+                .AddEntityFrameworkStores<LeavoDbContext>();
 
             //Configurations
             services.Configure<JwtSettings>(_configuration.GetSection("JwtSettings"));

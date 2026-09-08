@@ -1,11 +1,11 @@
-﻿using EmployeeLeaveManagement.Application.Specifications;
+﻿using Leavo.Application.Specifications;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace EmployeeLeaveManagement.Application.Abstractions.Persistence
+namespace Leavo.Application.Abstractions.Persistence
 {
     public interface IGenericRepository<T> where T : class
     {

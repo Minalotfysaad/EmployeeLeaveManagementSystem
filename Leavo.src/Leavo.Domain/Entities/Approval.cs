@@ -1,12 +1,12 @@
-﻿using EmployeeLeaveManagement.Domain.Common;
-using EmployeeLeaveManagement.Domain.Enums;
+﻿using Leavo.Domain.Common;
+using Leavo.Domain.Enums;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace EmployeeLeaveManagement.Domain.Entities
+namespace Leavo.Domain.Entities
 {
     public class Approval : BaseEntity<Guid>
     {

@@ -1,5 +1,5 @@
-﻿using EmployeeLeaveManagement.Application.DTOs.LeaveType;
-using EmployeeLeaveManagement.Domain.Entities;
+﻿using Leavo.Application.DTOs.LeaveType;
+using Leavo.Domain.Entities;
 using FluentValidation;
 using System;
 using System.Collections.Generic;
@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace EmployeeLeaveManagement.Application.Validators.LeaveType
+namespace Leavo.Application.Validators.LeaveType
 {
     public sealed class CreateLeaveTypeDtoValidator : AbstractValidator<CreateLeaveTypeDto>
     {

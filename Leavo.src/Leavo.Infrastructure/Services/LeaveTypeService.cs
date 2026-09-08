@@ -1,14 +1,14 @@
 ﻿using AutoMapper;
-using EmployeeLeaveManagement.Application.Abstractions.Persistence;
-using EmployeeLeaveManagement.Application.Abstractions.Services;
-using EmployeeLeaveManagement.Application.Common.Models;
-using EmployeeLeaveManagement.Application.DTOs.Employee;
-using EmployeeLeaveManagement.Application.DTOs.LeaveType;
-using EmployeeLeaveManagement.Application.Exceptions;
-using EmployeeLeaveManagement.Application.Validators.LeaveType;
-using EmployeeLeaveManagement.Domain.Entities;
-using EmployeeLeaveManagement.Infrastructure.Persistence.Repositories;
-using EmployeeLeaveManagement.Infrastructure.Persistence.Specifications;
+using Leavo.Application.Abstractions.Persistence;
+using Leavo.Application.Abstractions.Services;
+using Leavo.Application.Common.Models;
+using Leavo.Application.DTOs.Employee;
+using Leavo.Application.DTOs.LeaveType;
+using Leavo.Application.Exceptions;
+using Leavo.Application.Validators.LeaveType;
+using Leavo.Domain.Entities;
+using Leavo.Infrastructure.Persistence.Repositories;
+using Leavo.Infrastructure.Persistence.Specifications;
 using FluentValidation;
 using Microsoft.Extensions.Logging;
 using StackExchange.Redis;
@@ -19,7 +19,7 @@ using System.Text;
 using System.Threading.Tasks;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Model;
 
-namespace EmployeeLeaveManagement.Infrastructure.Services
+namespace Leavo.Infrastructure.Services
 {
     public class LeaveTypeService(
         IUnitOfWork _unitOfWork,

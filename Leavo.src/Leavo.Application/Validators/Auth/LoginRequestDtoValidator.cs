@@ -1,4 +1,4 @@
-﻿using EmployeeLeaveManagement.Application.DTOs.Auth;
+﻿using Leavo.Application.DTOs.Auth;
 using FluentValidation;
 using System;
 using System.Collections.Generic;
@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace EmployeeLeaveManagement.Application.Validators.Auth
+namespace Leavo.Application.Validators.Auth
 {
     public sealed class LoginRequestDtoValidator : AbstractValidator<LoginRequestDto>
     {

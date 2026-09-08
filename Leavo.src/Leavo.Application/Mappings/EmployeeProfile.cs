@@ -4,11 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using AutoMapper;
-using EmployeeLeaveManagement.Application.DTOs.Employee;
-using EmployeeLeaveManagement.Domain.Entities;
+using Leavo.Application.DTOs.Employee;
+using Leavo.Domain.Entities;
 
 
-namespace EmployeeLeaveManagement.Application.Mappings
+namespace Leavo.Application.Mappings
 {
     public sealed class EmployeeProfile : Profile
     {

@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace EmployeeLeaveManagement.Application.DTOs.Balance
+namespace Leavo.Application.DTOs.Balance
 {
     public sealed class UpdateBalanceDto
     {

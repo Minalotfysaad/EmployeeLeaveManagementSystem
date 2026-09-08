@@ -1,14 +1,14 @@
 ﻿using AutoMapper;
-using EmployeeLeaveManagement.Application.Abstractions.Caching;
-using EmployeeLeaveManagement.Application.Abstractions.Persistence;
-using EmployeeLeaveManagement.Application.Abstractions.Services;
-using EmployeeLeaveManagement.Application.Common.Models;
-using EmployeeLeaveManagement.Application.Common.Models.Caching;
-using EmployeeLeaveManagement.Application.DTOs.Department;
-using EmployeeLeaveManagement.Application.DTOs.Employee;
-using EmployeeLeaveManagement.Application.Exceptions;
-using EmployeeLeaveManagement.Domain.Entities;
-using EmployeeLeaveManagement.Infrastructure.Persistence.Specifications;
+using Leavo.Application.Abstractions.Caching;
+using Leavo.Application.Abstractions.Persistence;
+using Leavo.Application.Abstractions.Services;
+using Leavo.Application.Common.Models;
+using Leavo.Application.Common.Models.Caching;
+using Leavo.Application.DTOs.Department;
+using Leavo.Application.DTOs.Employee;
+using Leavo.Application.Exceptions;
+using Leavo.Domain.Entities;
+using Leavo.Infrastructure.Persistence.Specifications;
 using FluentValidation;
 using System;
 using System.Collections.Generic;
@@ -16,7 +16,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace EmployeeLeaveManagement.Infrastructure.Services
+namespace Leavo.Infrastructure.Services
 {
     public class DepartmentService(
         IUnitOfWork _unitOfWork,

@@ -1,16 +1,16 @@
-﻿using EmployeeLeaveManagement.Application.Abstractions.Caching;
-using EmployeeLeaveManagement.Application.Abstractions.Persistence;
-using EmployeeLeaveManagement.Application.Abstractions.Services;
-using EmployeeLeaveManagement.Application.Common.Models.Caching;
-using EmployeeLeaveManagement.Application.DTOs.Auth;
-using EmployeeLeaveManagement.Application.Exceptions;
-using EmployeeLeaveManagement.Domain.Constants;
-using EmployeeLeaveManagement.Domain.Entities;
+﻿using Leavo.Application.Abstractions.Caching;
+using Leavo.Application.Abstractions.Persistence;
+using Leavo.Application.Abstractions.Services;
+using Leavo.Application.Common.Models.Caching;
+using Leavo.Application.DTOs.Auth;
+using Leavo.Application.Exceptions;
+using Leavo.Domain.Constants;
+using Leavo.Domain.Entities;
 using FluentValidation;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Logging;
 
-namespace EmployeeLeaveManagement.Infrastructure.Services
+namespace Leavo.Infrastructure.Services
 {
     public class AuthService(
         UserManager<Employee> _userManager,

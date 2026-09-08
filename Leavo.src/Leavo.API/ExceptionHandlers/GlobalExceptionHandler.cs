@@ -1,8 +1,8 @@
-﻿using EmployeeLeaveManagement.Application.Exceptions;
+﻿using Leavo.Application.Exceptions;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 
-namespace EmployeeLeaveManagement.API.ExceptionHandlers
+namespace Leavo.API.ExceptionHandlers
 {
     public sealed class GlobalExceptionHandler : IExceptionHandler
     {

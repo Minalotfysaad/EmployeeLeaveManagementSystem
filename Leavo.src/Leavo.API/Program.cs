@@ -1,13 +1,13 @@
-
-using EmployeeLeaveManagement.API.Extensions;
-using EmployeeLeaveManagement.Application.Extentions;
-using EmployeeLeaveManagement.Infrastructure.Extensions;
-using EmployeeLeaveManagement.Infrastructure.Persistence.Seed;
-using EmployeeLeaveManagement.Infrastructure.Persistence.Context;
+﻿
+using Leavo.API.Extensions;
+using Leavo.Application.Extentions;
+using Leavo.Infrastructure.Extensions;
+using Leavo.Infrastructure.Persistence.Seed;
+using Leavo.Infrastructure.Persistence.Context;
 using Microsoft.OpenApi;
 using Serilog;
 
-namespace EmpolyeeLeaveManagement
+namespace Leavo.API
 {
     public class Program
     {
@@ -78,7 +78,7 @@ namespace EmpolyeeLeaveManagement
 
             using (var scope = app.Services.CreateScope())
             {
-                var context = scope.ServiceProvider.GetRequiredService<EmployeeLeaveManagementDbContext>();
+                var context = scope.ServiceProvider.GetRequiredService<LeavoDbContext>();
                 await DatabaseSeeder.SeedAsync(context);
             }
 

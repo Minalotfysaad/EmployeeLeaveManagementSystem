@@ -1,5 +1,5 @@
-﻿using EmployeeLeaveManagement.Application.Abstractions.Persistence;
-using EmployeeLeaveManagement.Infrastructure.Persistence.Context;
+﻿using Leavo.Application.Abstractions.Persistence;
+using Leavo.Infrastructure.Persistence.Context;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using System;
 using System.Collections.Generic;
@@ -7,9 +7,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace EmployeeLeaveManagement.Infrastructure.Persistence.Repositories
+namespace Leavo.Infrastructure.Persistence.Repositories
 {
-    public sealed class UnitOfWork(EmployeeLeaveManagementDbContext _context) : IUnitOfWork
+    public sealed class UnitOfWork(LeavoDbContext _context) : IUnitOfWork
     {
         private readonly Dictionary<Type, object> _repositories = []; //For caching repos
 

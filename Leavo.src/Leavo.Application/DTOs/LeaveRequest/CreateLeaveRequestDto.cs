@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace EmployeeLeaveManagement.Application.DTOs.LeaveRequest
+namespace Leavo.Application.DTOs.LeaveRequest
 {
     public sealed class CreateLeaveRequestDto
     {

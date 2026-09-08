@@ -5,7 +5,7 @@ using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace EmployeeLeaveManagement.Application.Specifications
+namespace Leavo.Application.Specifications
 {
     public abstract class BaseSpecification<T> : ISpecification<T>
     {

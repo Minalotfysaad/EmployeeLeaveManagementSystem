@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace EmployeeLeaveManagement.Application.Abstractions.Persistence
+namespace Leavo.Application.Abstractions.Persistence
 {
     public interface IUnitOfWork
     {

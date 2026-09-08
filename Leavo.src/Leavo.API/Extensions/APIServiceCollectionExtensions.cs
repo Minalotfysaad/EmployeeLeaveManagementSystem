@@ -1,6 +1,6 @@
-﻿using EmployeeLeaveManagement.API.ExceptionHandlers;
+﻿using Leavo.API.ExceptionHandlers;
 
-namespace EmployeeLeaveManagement.API.Extensions
+namespace Leavo.API.Extensions
 {
     public static class APIServiceCollectionExtensions
     {

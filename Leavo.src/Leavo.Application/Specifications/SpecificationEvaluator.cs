@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace EmployeeLeaveManagement.Application.Specifications
+namespace Leavo.Application.Specifications
 {
     public static class SpecificationEvaluator<T> where T : class
     {

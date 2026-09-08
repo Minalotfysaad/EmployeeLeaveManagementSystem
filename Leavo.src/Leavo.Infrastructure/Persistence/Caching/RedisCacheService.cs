@@ -1,4 +1,4 @@
-﻿using EmployeeLeaveManagement.Application.Abstractions.Caching;
+﻿using Leavo.Application.Abstractions.Caching;
 using StackExchange.Redis;
 using System;
 using System.Collections.Generic;
@@ -7,7 +7,7 @@ using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
 
-namespace EmployeeLeaveManagement.Infrastructure.Persistence.Caching
+namespace Leavo.Infrastructure.Persistence.Caching
 {
     public sealed class RedisCacheService(IConnectionMultiplexer redis) : ICacheService
     {

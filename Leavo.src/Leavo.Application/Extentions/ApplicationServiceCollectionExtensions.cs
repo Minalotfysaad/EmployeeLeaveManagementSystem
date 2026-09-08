@@ -1,4 +1,4 @@
-﻿using EmployeeLeaveManagement.Application.Mappings;
+﻿using Leavo.Application.Mappings;
 using FluentValidation;
 using Microsoft.Extensions.DependencyInjection;
 using System;
@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace EmployeeLeaveManagement.Application.Extentions
+namespace Leavo.Application.Extentions
 {
     public static class ApplicationServiceCollectionExtensions
     {

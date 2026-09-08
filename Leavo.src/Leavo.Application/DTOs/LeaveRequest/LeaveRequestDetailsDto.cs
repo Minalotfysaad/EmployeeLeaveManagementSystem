@@ -1,11 +1,11 @@
-﻿using EmployeeLeaveManagement.Domain.Enums;
+﻿using Leavo.Domain.Enums;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace EmployeeLeaveManagement.Application.DTOs.LeaveRequest
+namespace Leavo.Application.DTOs.LeaveRequest
 {
     public sealed class LeaveRequestDetailsDto
     {

@@ -1,4 +1,4 @@
-﻿using EmployeeLeaveManagement.Domain.Entities;
+﻿using Leavo.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using System;
@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace EmployeeLeaveManagement.Infrastructure.Persistence.Configurations
+namespace Leavo.Infrastructure.Persistence.Configurations
 {
     public class HolidayConfiguration : IEntityTypeConfiguration<Holiday>
     {

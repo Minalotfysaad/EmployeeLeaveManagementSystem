@@ -27,8 +27,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\EmployeeLeaveManagement.Application\EmployeeLeaveManagement.Application.csproj" />
-    <ProjectReference Include="..\EmployeeLeaveManagement.Infrastructure\EmployeeLeaveManagement.Infrastructure.csproj" />
+    <ProjectReference Include="..\Leavo.Application\Leavo.Application.csproj" />
+    <ProjectReference Include="..\Leavo.Infrastructure\Leavo.Infrastructure.csproj" />
   </ItemGroup>
 
 </Project>

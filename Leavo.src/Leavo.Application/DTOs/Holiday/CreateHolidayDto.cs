@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace EmployeeLeaveManagement.Application.DTOs.Holiday
+namespace Leavo.Application.DTOs.Holiday
 {
     public sealed class CreateHolidayDto
     {

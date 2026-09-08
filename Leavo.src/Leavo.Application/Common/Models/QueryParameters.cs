@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace EmployeeLeaveManagement.Application.Common.Models
+namespace Leavo.Application.Common.Models
 {
     public abstract class QueryParameters
     {

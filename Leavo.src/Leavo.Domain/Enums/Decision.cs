@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace EmployeeLeaveManagement.Domain.Enums
+namespace Leavo.Domain.Enums
 {
     public enum Decision
     {

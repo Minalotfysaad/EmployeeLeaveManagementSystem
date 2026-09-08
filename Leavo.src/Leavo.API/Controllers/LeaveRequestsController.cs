@@ -1,13 +1,13 @@
-﻿using EmployeeLeaveManagement.Application.Abstractions.Services;
-using EmployeeLeaveManagement.Application.Common.Models;
-using EmployeeLeaveManagement.Application.DTOs.Employee;
-using EmployeeLeaveManagement.Application.DTOs.LeaveRequest;
-using EmployeeLeaveManagement.Infrastructure.Services;
+﻿using Leavo.Application.Abstractions.Services;
+using Leavo.Application.Common.Models;
+using Leavo.Application.DTOs.Employee;
+using Leavo.Application.DTOs.LeaveRequest;
+using Leavo.Infrastructure.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 
-namespace EmployeeLeaveManagement.API.Controllers
+namespace Leavo.API.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]

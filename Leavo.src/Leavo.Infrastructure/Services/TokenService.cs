@@ -1,6 +1,6 @@
-﻿using EmployeeLeaveManagement.Application.Abstractions.Services;
-using EmployeeLeaveManagement.Domain.Entities;
-using EmployeeLeaveManagement.Infrastructure.Authentication;
+﻿using Leavo.Application.Abstractions.Services;
+using Leavo.Domain.Entities;
+using Leavo.Infrastructure.Authentication;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
@@ -12,7 +12,7 @@ using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace EmployeeLeaveManagement.Infrastructure.Services
+namespace Leavo.Infrastructure.Services
 {
     public class TokenService(UserManager<Employee> _userManager, IOptions<JwtSettings> jwtSettings) : ITokenService
     {

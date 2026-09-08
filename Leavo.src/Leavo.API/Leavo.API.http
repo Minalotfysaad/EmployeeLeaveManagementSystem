@@ -1,6 +1,6 @@
-@EmpolyeeLeaveManagement_HostAddress = http://localhost:5002
+﻿@Leavo.API_HostAddress = http://localhost:5002
 
-GET {{EmpolyeeLeaveManagement_HostAddress}}/weatherforecast/
+GET {{Leavo.API_HostAddress}}/weatherforecast/
 Accept: application/json
 
 ###

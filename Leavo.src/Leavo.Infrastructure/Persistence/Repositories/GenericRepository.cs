@@ -1,6 +1,6 @@
-﻿using EmployeeLeaveManagement.Application.Abstractions.Persistence;
-using EmployeeLeaveManagement.Application.Specifications;
-using EmployeeLeaveManagement.Infrastructure.Persistence.Context;
+﻿using Leavo.Application.Abstractions.Persistence;
+using Leavo.Application.Specifications;
+using Leavo.Infrastructure.Persistence.Context;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -8,14 +8,14 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace EmployeeLeaveManagement.Infrastructure.Persistence.Repositories
+namespace Leavo.Infrastructure.Persistence.Repositories
 {
     public class GenericRepository<T> : IGenericRepository<T> where T : class
     {
-        protected readonly EmployeeLeaveManagementDbContext _context;
+        protected readonly LeavoDbContext _context;
         protected readonly DbSet<T> _dbSet;
 
-        public GenericRepository(EmployeeLeaveManagementDbContext context)
+        public GenericRepository(LeavoDbContext context)
         {
             _context = context;
             _dbSet = context.Set<T>();

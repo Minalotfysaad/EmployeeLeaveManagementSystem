@@ -1,13 +1,13 @@
-﻿using EmployeeLeaveManagement.Application.Common.Models;
-using EmployeeLeaveManagement.Application.DTOs.Employee;
-using EmployeeLeaveManagement.Application.DTOs.Holiday;
+﻿using Leavo.Application.Common.Models;
+using Leavo.Application.DTOs.Employee;
+using Leavo.Application.DTOs.Holiday;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace EmployeeLeaveManagement.Application.Abstractions.Services
+namespace Leavo.Application.Abstractions.Services
 {
     public interface IHolidayService
     {
