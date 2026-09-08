@@ -1,17 +1,19 @@
-﻿
+
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.0.31903.59
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Leavo.src", "Leavo.src", "{C28C23AC-E57F-89F0-3AFD-E7016EBBA075}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{C28C23AC-E57F-89F0-3AFD-E7016EBBA075}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Leavo.Domain", "Leavo.src\Leavo.Domain\Leavo.Domain.csproj", "{CD9A0897-6F07-4291-A34D-249A0F3D9356}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{E6D15A01-C783-49F7-943C-311AC2D38A23}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Leavo.Application", "Leavo.src\Leavo.Application\Leavo.Application.csproj", "{7B9D885E-8E99-49FD-A73F-5761F7E5476E}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Leavo.Domain", "src\Leavo.Domain\Leavo.Domain.csproj", "{CD9A0897-6F07-4291-A34D-249A0F3D9356}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Leavo.Infrastructure", "Leavo.src\Leavo.Infrastructure\Leavo.Infrastructure.csproj", "{484EF9DF-1B2D-4F67-B626-ED76F9366EDF}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Leavo.Application", "src\Leavo.Application\Leavo.Application.csproj", "{7B9D885E-8E99-49FD-A73F-5761F7E5476E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Leavo.API", "Leavo.src\Leavo.API\Leavo.API.csproj", "{1165C938-1DB5-475B-AAD2-1C09B13B7A17}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Leavo.Infrastructure", "src\Leavo.Infrastructure\Leavo.Infrastructure.csproj", "{484EF9DF-1B2D-4F67-B626-ED76F9366EDF}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Leavo.API", "src\Leavo.API\Leavo.API.csproj", "{1165C938-1DB5-475B-AAD2-1C09B13B7A17}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
