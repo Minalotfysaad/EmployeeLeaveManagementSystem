@@ -1,0 +1,8 @@
+<Solution>
+  <Folder Name="/Leavo.src/">
+    <Project Path="Leavo.src/Leavo.API/Leavo.API.csproj" />
+    <Project Path="Leavo.src/Leavo.Application/Leavo.Application.csproj" />
+    <Project Path="Leavo.src/Leavo.Domain/Leavo.Domain.csproj" />
+    <Project Path="Leavo.src/Leavo.Infrastructure/Leavo.Infrastructure.csproj" />
+  </Folder>
+</Solution>
