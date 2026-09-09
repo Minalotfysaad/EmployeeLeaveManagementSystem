@@ -6,6 +6,14 @@ import {
 } from '../types/dashboard.types';
 import { mockStore } from './mock/mockStore';
 
+export interface UpcomingTeamLeaveDto {
+  id: string;
+  name: string;
+  avatar?: string;
+  type: string;
+  dates: string;
+}
+
 export const dashboardApi = {
   async getEmployeeDashboard(currentUserId?: string): Promise<EmployeeDashboardDto> {
     if (!isMockActive()) {
@@ -33,5 +41,13 @@ export const dashboardApi = {
     }
 
     return mockStore.getHRDashboard();
+  },
+
+  async getUpcomingTeamLeave(): Promise<UpcomingTeamLeaveDto[]> {
+    if (!isMockActive()) {
+      return [];
+    }
+
+    return mockStore.getUpcomingTeamLeave();
   },
 };

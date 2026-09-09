@@ -16,6 +16,7 @@ import {
 import { useAuth } from '../../hooks/useAuth';
 import { Avatar } from '../ui/Avatar';
 import { mockStore } from '../../api/mock/mockStore';
+import { notificationsApi, AppNotification } from '../../api/notifications.api';
 import { useToast } from '../../hooks/useToast';
 import { cn } from '../../utils/cn';
 
@@ -32,41 +33,43 @@ export const Header: React.FC<HeaderProps> = ({ onOpenMobileNav }) => {
   const [profileOpen, setProfileOpen] = useState(false);
   const [notificationsOpen, setNotificationsOpen] = useState(false);
 
-  const [notifications, setNotifications] = useState([
-    {
-      id: 'n1',
-      title: 'Leave Request Approved',
-      time: '2 hours ago',
-      read: false,
-      icon: CheckCircle2,
-      color: 'text-emerald-600',
-    },
-    {
-      id: 'n2',
-      title: 'Upcoming Leave Reminder',
-      time: '1 day ago',
-      read: false,
-      icon: Clock,
-      color: 'text-brand-teal',
-    },
-    {
-      id: 'n3',
-      title: 'Holiday: Thanksgiving coming up',
-      time: '3 days ago',
-      read: true,
-      icon: Briefcase,
-      color: 'text-brand-orange',
-    },
-  ]);
+  const [notifications, setNotifications] = useState<AppNotification[]>([]);
+
+  useEffect(() => {
+    let isMounted = true;
+    notificationsApi.getNotifications().then((data) => {
+      if (isMounted) {
+        setNotifications(data);
+      }
+    });
+    return () => {
+      isMounted = false;
+    };
+  }, [user?.id, isDemoMode]);
+
+  const getNotificationIcon = (type: AppNotification['type']) => {
+    switch (type) {
+      case 'approved':
+        return { icon: CheckCircle2, color: 'text-emerald-600' };
+      case 'reminder':
+        return { icon: Clock, color: 'text-brand-teal' };
+      case 'holiday':
+        return { icon: Briefcase, color: 'text-brand-orange' };
+      default:
+        return { icon: Bell, color: 'text-brand-teal' };
+    }
+  };
 
   const unreadCount = notifications.filter((n) => !n.read).length;
 
-  const handleMarkAllRead = () => {
+  const handleMarkAllRead = async () => {
+    await notificationsApi.markAllAsRead();
     setNotifications((prev) => prev.map((n) => ({ ...n, read: true })));
     success('Marked all notifications as read');
   };
 
-  const handleNotificationClick = (id: string) => {
+  const handleNotificationClick = async (id: string) => {
+    await notificationsApi.markAsRead(id);
     setNotifications((prev) =>
       prev.map((n) => (n.id === id ? { ...n, read: true } : n))
     );
@@ -178,7 +181,7 @@ export const Header: React.FC<HeaderProps> = ({ onOpenMobileNav }) => {
             <button
               onClick={() => {
                 switchRole('HR');
-                success('Switched demo persona to System Admin (HR)');
+                success('Switched demo persona to Elena Rostova (HR Lead)');
               }}
               className={`px-2.5 py-1 text-xs font-semibold rounded-lg transition-all ${
                 user?.roles?.includes('HR')
@@ -226,10 +229,13 @@ export const Header: React.FC<HeaderProps> = ({ onOpenMobileNav }) => {
               </div>
               <div className="divide-y divide-gray-50 max-h-72 overflow-y-auto">
                 {notifications.length === 0 ? (
-                  <div className="p-4 text-center text-xs text-gray-400">No notifications</div>
+                  <div className="p-6 text-center text-xs text-gray-400 flex flex-col items-center justify-center gap-1.5">
+                    <Bell className="w-5 h-5 text-gray-300" />
+                    <span>No new notifications</span>
+                  </div>
                 ) : (
                   notifications.map((notif) => {
-                    const Icon = notif.icon;
+                    const { icon: Icon, color } = getNotificationIcon(notif.type);
                     return (
                       <div
                         key={notif.id}
@@ -239,7 +245,7 @@ export const Header: React.FC<HeaderProps> = ({ onOpenMobileNav }) => {
                           !notif.read && 'bg-brand-teal/5'
                         )}
                       >
-                        <div className={`p-1.5 rounded-lg bg-gray-100 ${notif.color} mt-0.5`}>
+                        <div className={`p-1.5 rounded-lg bg-gray-100 ${color} mt-0.5`}>
                           <Icon className="w-4 h-4" />
                         </div>
                         <div className="flex-1">
@@ -269,7 +275,7 @@ export const Header: React.FC<HeaderProps> = ({ onOpenMobileNav }) => {
             className="flex items-center gap-3 p-1 pl-2 rounded-xl hover:bg-gray-50 transition-colors border border-transparent hover:border-gray-200 focus:outline-none"
           >
             <Avatar
-              name={user?.fullName || 'Leila Vance'}
+              name={user?.fullName || 'User'}
               src={
                 user?.email === 'leila.vance@company.com'
                   ? 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=150&auto=format&fit=crop&q=80'
@@ -279,14 +285,14 @@ export const Header: React.FC<HeaderProps> = ({ onOpenMobileNav }) => {
             />
             <div className="hidden md:flex flex-col text-left">
               <span className="text-xs font-bold text-navy-900 leading-tight">
-                {user?.fullName || 'Leila Vance'}
+                {user?.fullName || 'User'}
               </span>
               <span className="text-[11px] text-gray-500 font-medium">
                 {user?.roles?.includes('HR')
                   ? 'HR Admin'
                   : user?.roles?.includes('Manager')
-                  ? 'Engineering Manager'
-                  : 'Product Designer'}
+                  ? 'Manager'
+                  : 'Employee'}
               </span>
             </div>
             <ChevronDown className="w-3.5 h-3.5 text-gray-400" />
@@ -295,8 +301,8 @@ export const Header: React.FC<HeaderProps> = ({ onOpenMobileNav }) => {
           {profileOpen && (
             <div className="absolute right-0 mt-2 w-56 bg-white rounded-2xl border border-[#E5EAF0] shadow-dropdown py-2 z-50 animate-in fade-in zoom-in-95 duration-150">
               <div className="px-4 py-2 border-b border-gray-100">
-                <p className="text-xs font-bold text-navy-900">{user?.fullName}</p>
-                <p className="text-[11px] text-gray-500 truncate">{user?.email}</p>
+                <p className="text-xs font-bold text-navy-900">{user?.fullName || 'User'}</p>
+                <p className="text-[11px] text-gray-500 truncate">{user?.email || '—'}</p>
               </div>
 
               <div className="py-1">
@@ -310,13 +316,15 @@ export const Header: React.FC<HeaderProps> = ({ onOpenMobileNav }) => {
                   <UserIcon className="w-4 h-4 text-gray-400" />
                   My Profile
                 </button>
-                <button
-                  onClick={handleResetData}
-                  className="w-full px-4 py-2 text-xs text-gray-700 hover:bg-gray-50 flex items-center gap-2.5 transition-colors"
-                >
-                  <RotateCcw className="w-4 h-4 text-gray-400" />
-                  Reset Sample Data
-                </button>
+                {isDemoMode && (
+                  <button
+                    onClick={handleResetData}
+                    className="w-full px-4 py-2 text-xs text-gray-700 hover:bg-gray-50 flex items-center gap-2.5 transition-colors"
+                  >
+                    <RotateCcw className="w-4 h-4 text-gray-400" />
+                    Reset Sample Data
+                  </button>
+                )}
               </div>
 
               <div className="border-t border-gray-100 pt-1">

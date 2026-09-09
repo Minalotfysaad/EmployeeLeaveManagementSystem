@@ -1,4 +1,4 @@
-﻿    using Leavo.Application.Abstractions.Services;
+    using Leavo.Application.Abstractions.Services;
 using Leavo.Application.Common.Models;
 using Leavo.Application.DTOs.Balance;
 using Leavo.Application.DTOs.Dashboard;
@@ -18,7 +18,7 @@ namespace Leavo.API.Controllers
         IDashboardService _dashboardService)
         : ApiControllerBase
     {
-        [Authorize(Roles = Roles.Employee)]
+        [Authorize(Roles = $"{Roles.Employee},{Roles.Manager},{Roles.HR}")]
         [HttpGet("me")]
         public async Task<ActionResult<EmployeeDetailsDto>> GetMyProfile()
         {

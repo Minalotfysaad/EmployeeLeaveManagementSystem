@@ -38,12 +38,12 @@ export const INITIAL_LEAVE_TYPES: LeaveTypeDetailsDto[] = [
 export const INITIAL_USERS: (EmployeeDetailsDto & { managerId?: string })[] = [
   {
     id: '99999999-9999-9999-9999-999999999999',
-    firstName: 'System',
-    lastName: 'Administrator',
-    email: 'admin@company.com',
+    firstName: 'Elena',
+    lastName: 'Rostova',
+    email: 'elena.rostova@company.com',
     departmentName: 'Human Resources',
     phoneNumber: '+1 (555) 019-2831',
-    roles: ['HR', 'Employee'],
+    roles: ['HR'],
     createdDate: '2025-01-01T00:00:00Z',
   },
   {
@@ -124,24 +124,6 @@ export const INITIAL_BALANCES: Record<string, BalanceDto[]> = {
       leaveTypeId: 'aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa',
       leaveType: 'Annual Leave',
       remainingDays: 16,
-    },
-    {
-      leaveTypeId: 'bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb',
-      leaveType: 'Sick Leave',
-      remainingDays: 10,
-    },
-    {
-      leaveTypeId: 'cccccccc-cccc-cccc-cccc-cccccccccccc',
-      leaveType: 'Emergency Leave',
-      remainingDays: 5,
-    },
-  ],
-  // System Admin
-  '99999999-9999-9999-9999-999999999999': [
-    {
-      leaveTypeId: 'aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa',
-      leaveType: 'Annual Leave',
-      remainingDays: 20,
     },
     {
       leaveTypeId: 'bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb',
@@ -258,7 +240,7 @@ export const INITIAL_HOLIDAYS: HolidayDetailsDto[] = [
     startDate: '2026-01-01T00:00:00Z',
     endDate: '2026-01-01T00:00:00Z',
     createdAt: '2025-12-01T00:00:00Z',
-    createdBy: 'System Administrator',
+    createdBy: 'Elena Rostova',
   },
   {
     id: 'hol-2',
@@ -266,7 +248,7 @@ export const INITIAL_HOLIDAYS: HolidayDetailsDto[] = [
     startDate: '2026-05-01T00:00:00Z',
     endDate: '2026-05-01T00:00:00Z',
     createdAt: '2025-12-01T00:00:00Z',
-    createdBy: 'System Administrator',
+    createdBy: 'Elena Rostova',
   },
   {
     id: 'hol-3',
@@ -274,7 +256,7 @@ export const INITIAL_HOLIDAYS: HolidayDetailsDto[] = [
     startDate: '2026-12-25T00:00:00Z',
     endDate: '2026-12-25T00:00:00Z',
     createdAt: '2025-12-01T00:00:00Z',
-    createdBy: 'System Administrator',
+    createdBy: 'Elena Rostova',
   },
   {
     id: 'hol-4',
@@ -282,7 +264,7 @@ export const INITIAL_HOLIDAYS: HolidayDetailsDto[] = [
     startDate: '2026-11-26T00:00:00Z',
     endDate: '2026-11-27T00:00:00Z',
     createdAt: '2025-12-01T00:00:00Z',
-    createdBy: 'System Administrator',
+    createdBy: 'Elena Rostova',
   },
 ];
 
@@ -314,5 +296,60 @@ export const UPCOMING_TEAM_LEAVE = [
     type: 'Personal',
     dates: 'Oct 17',
     avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80',
+  },
+];
+
+export interface CalendarLeaveEvent {
+  id: string;
+  day: number;
+  month: number;
+  year: number;
+  employee: string;
+  type: string;
+  color: string;
+}
+
+export const INITIAL_CALENDAR_EVENTS: CalendarLeaveEvent[] = [
+  { id: 'cal-1', day: 10, month: 9, year: 2026, employee: 'David Chen', type: 'Vacation', color: 'bg-brand-lightTeal text-brand-darkTeal border-brand-teal/30' },
+  { id: 'cal-2', day: 11, month: 9, year: 2026, employee: 'David Chen', type: 'Vacation', color: 'bg-brand-lightTeal text-brand-darkTeal border-brand-teal/30' },
+  { id: 'cal-3', day: 12, month: 9, year: 2026, employee: 'Sarah Kim', type: 'Personal', color: 'bg-amber-50 text-amber-800 border-amber-200' },
+  { id: 'cal-4', day: 12, month: 9, year: 2026, employee: 'David Chen', type: 'Vacation', color: 'bg-brand-lightTeal text-brand-darkTeal border-brand-teal/30' },
+  { id: 'cal-5', day: 13, month: 9, year: 2026, employee: 'Annan Fiala', type: 'Vacation', color: 'bg-brand-lightTeal text-brand-darkTeal border-brand-teal/30' },
+  { id: 'cal-6', day: 14, month: 9, year: 2026, employee: 'David Chen', type: 'Vacation', color: 'bg-brand-lightTeal text-brand-darkTeal border-brand-teal/30' },
+  { id: 'cal-7', day: 15, month: 9, year: 2026, employee: 'Leila Vance', type: 'Vacation', color: 'bg-emerald-50 text-emerald-800 border-emerald-200' },
+  { id: 'cal-8', day: 16, month: 9, year: 2026, employee: 'Leila Vance', type: 'Vacation', color: 'bg-emerald-50 text-emerald-800 border-emerald-200' },
+  { id: 'cal-9', day: 17, month: 9, year: 2026, employee: 'Ciney Monn', type: 'Personal', color: 'bg-amber-50 text-amber-800 border-amber-200' },
+  { id: 'cal-10', day: 18, month: 9, year: 2026, employee: 'Leila Vance', type: 'Vacation', color: 'bg-emerald-50 text-emerald-800 border-emerald-200' },
+];
+
+export interface AppNotification {
+  id: string;
+  title: string;
+  time: string;
+  read: boolean;
+  type: 'approved' | 'reminder' | 'holiday' | 'info';
+}
+
+export const INITIAL_NOTIFICATIONS: AppNotification[] = [
+  {
+    id: 'n1',
+    title: 'Leave Request Approved',
+    time: '2 hours ago',
+    read: false,
+    type: 'approved',
+  },
+  {
+    id: 'n2',
+    title: 'Upcoming Leave Reminder',
+    time: '1 day ago',
+    read: false,
+    type: 'reminder',
+  },
+  {
+    id: 'n3',
+    title: 'Holiday: Thanksgiving coming up',
+    time: '3 days ago',
+    read: true,
+    type: 'holiday',
   },
 ];

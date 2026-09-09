@@ -2,6 +2,8 @@ export interface EmployeeSummaryDto {
   id: string;
   fullName: string;
   email: string;
+  roles?: string[];
+  isSoleHR?: boolean;
 }
 
 export interface EmployeeDetailsDto {

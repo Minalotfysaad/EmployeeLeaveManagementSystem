@@ -27,7 +27,7 @@ export const leaveRequestsApi = {
   ): Promise<PagedResult<LeaveRequestDetailsDto>> {
     if (!isMockActive()) {
       const response = await apiClient.get<PagedResult<LeaveRequestDetailsDto>>(
-        '/leaverequests/my-requests',
+        '/leaverequests/my',
         { params }
       );
       return response.data;
@@ -53,7 +53,7 @@ export const leaveRequestsApi = {
 
   async getLeaveRequestById(id: string): Promise<LeaveRequestDetailsDto> {
     if (!isMockActive()) {
-      const response = await apiClient.get<LeaveRequestDetailsDto>(`/leaverequests/${id}`);
+      const response = await apiClient.get<LeaveRequestDetailsDto>(`/leaverequests/my/${id}`);
       return response.data;
     }
 
@@ -64,7 +64,7 @@ export const leaveRequestsApi = {
 
   async cancelLeaveRequest(requestId: string, currentUserId?: string): Promise<void> {
     if (!isMockActive()) {
-      await apiClient.post(`/leaverequests/${requestId}/cancel`);
+      await apiClient.patch(`/leaverequests/my/${requestId}/cancel`);
       return;
     }
 

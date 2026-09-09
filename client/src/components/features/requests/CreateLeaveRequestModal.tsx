@@ -97,6 +97,7 @@ export const CreateLeaveRequestModal: React.FC<CreateLeaveRequestModalProps> = (
       queryClient.invalidateQueries({ queryKey: ['employeeDashboard'] });
       queryClient.invalidateQueries({ queryKey: ['myBalances'] });
       queryClient.invalidateQueries({ queryKey: ['managerPending'] });
+      queryClient.invalidateQueries({ queryKey: ['upcomingTeamLeave'] });
       reset();
       onClose();
     },

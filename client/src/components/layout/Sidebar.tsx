@@ -28,14 +28,20 @@ export const Sidebar: React.FC<SidebarProps> = ({ className }) => {
   const { isManager, isHR } = useAuth();
   const [collapsed, setCollapsed] = useState(false);
 
-  const employeeLinks = [
-    { to: '/dashboard', label: 'Overview', icon: LayoutDashboard },
-    { to: '/requests', label: 'Requests', icon: FileText },
-    { to: '/balance', label: 'Balance', icon: PieChart },
-    { to: '/history', label: 'History', icon: History },
-    { to: '/calendar', label: 'Calendar', icon: Calendar },
-    { to: '/settings', label: 'Settings', icon: Settings },
-  ];
+  const employeeLinks = isHR
+    ? [
+        { to: '/dashboard', label: 'Overview', icon: LayoutDashboard },
+        { to: '/calendar', label: 'Calendar', icon: Calendar },
+        { to: '/settings', label: 'Settings', icon: Settings },
+      ]
+    : [
+        { to: '/dashboard', label: 'Overview', icon: LayoutDashboard },
+        { to: '/requests', label: 'Requests', icon: FileText },
+        { to: '/balance', label: 'Balance', icon: PieChart },
+        { to: '/history', label: 'History', icon: History },
+        { to: '/calendar', label: 'Calendar', icon: Calendar },
+        { to: '/settings', label: 'Settings', icon: Settings },
+      ];
 
   const managerLinks = [
     { to: '/manager/approvals', label: 'Pending Approvals', icon: CheckSquare },
@@ -81,7 +87,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ className }) => {
         <div>
           {!collapsed && (
             <span className="px-3 text-[11px] font-bold uppercase tracking-wider text-gray-400/80">
-              Employee
+              {isHR ? 'General' : 'Employee'}
             </span>
           )}
           <nav className="mt-2 space-y-1">

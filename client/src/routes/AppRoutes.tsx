@@ -39,11 +39,22 @@ export const AppRoutes: React.FC = () => {
         <Route element={<AppLayout />}>
           <Route index element={<Navigate to="/dashboard" replace />} />
           <Route path="/dashboard" element={<DashboardPage />} />
-          <Route path="/requests" element={<MyRequestsPage />} />
-          <Route path="/balance" element={<LeaveBalancePage />} />
-          <Route path="/history" element={<LeaveHistoryPage />} />
           <Route path="/calendar" element={<CalendarPage />} />
           <Route path="/settings" element={<SettingsPage />} />
+
+          {/* Employee & Manager personal leave routes (HR has administrative privileges only) */}
+          <Route
+            element={
+              <RoleRoute
+                allowedRoles={['Employee', 'Manager']}
+                errorMessage="HR accounts have administrative privileges only and do not have personal leave requests, balances, or history."
+              />
+            }
+          >
+            <Route path="/requests" element={<MyRequestsPage />} />
+            <Route path="/balance" element={<LeaveBalancePage />} />
+            <Route path="/history" element={<LeaveHistoryPage />} />
+          </Route>
 
           {/* Manager Routes (HR is restricted from manager pending approvals) */}
           <Route element={<RoleRoute allowedRoles={['Manager']} />}>

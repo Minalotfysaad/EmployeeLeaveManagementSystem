@@ -12,6 +12,7 @@ import {
   Trash2,
   Mail,
   ChevronDown,
+  ShieldCheck,
 } from 'lucide-react';
 import { PageHeader } from '../../components/shared/PageHeader';
 import { SearchFilterBar } from '../../components/shared/SearchFilterBar';
@@ -118,7 +119,13 @@ export const EmployeesPage: React.FC = () => {
 
   // Delete Employee Mutation
   const deleteMutation = useMutation({
-    mutationFn: (id: string) => employeesApi.deleteEmployee(id),
+    mutationFn: (id: string) => {
+      const emp = employees.find((e) => e.id === id);
+      if (emp?.isSoleHR) {
+        throw new Error('Cannot delete the only HR Administrator.');
+      }
+      return employeesApi.deleteEmployee(id);
+    },
     onSuccess: () => {
       success('Employee record removed.');
       queryClient.invalidateQueries({ queryKey: ['employees'] });
@@ -222,7 +229,22 @@ export const EmployeesPage: React.FC = () => {
                 {employees.map((emp) => (
                   <TableRow key={emp.id}>
                     <TableCell>
-                      <span className="font-bold text-navy-900">{emp.fullName}</span>
+                      <div className="flex items-center gap-2">
+                        <span className="font-bold text-navy-900">{emp.fullName}</span>
+                        {emp.roles?.includes('HR') ? (
+                          <span className="text-[10px] font-bold uppercase tracking-wider text-brand-darkTeal bg-brand-lightTeal border border-brand-teal/20 px-1.5 py-0.5 rounded-md">
+                            HR
+                          </span>
+                        ) : emp.roles?.includes('Manager') ? (
+                          <span className="text-[10px] font-bold uppercase tracking-wider text-amber-800 bg-amber-50 border border-amber-200 px-1.5 py-0.5 rounded-md">
+                            Manager
+                          </span>
+                        ) : (
+                          <span className="text-[10px] font-bold uppercase tracking-wider text-gray-500 bg-gray-50 border border-gray-200 px-1.5 py-0.5 rounded-md">
+                            Staff
+                          </span>
+                        )}
+                      </div>
                     </TableCell>
                     <TableCell>
                       <div className="flex items-center gap-1.5 text-xs text-gray-600">
@@ -268,16 +290,26 @@ export const EmployeesPage: React.FC = () => {
                       </div>
                     </TableCell>
                     <TableCell className="text-right">
-                      <Button
-                        variant="ghost"
-                        size="xs"
-                        className="text-rose-600 hover:text-rose-700 hover:bg-rose-50"
-                        onClick={() => setDeleteEmployeeId(emp.id)}
-                        title="Delete employee"
-                        leftIcon={<Trash2 className="w-3.5 h-3.5" />}
-                      >
-                        Remove
-                      </Button>
+                      {emp.isSoleHR ? (
+                        <span
+                          className="inline-flex items-center gap-1 text-[11px] font-semibold text-gray-400 bg-gray-50 border border-gray-200 px-2.5 py-1 rounded-lg select-none"
+                          title="Sole HR Administrator cannot be deleted"
+                        >
+                          <ShieldCheck className="w-3.5 h-3.5 text-brand-darkTeal" />
+                          <span>Sole HR Admin</span>
+                        </span>
+                      ) : (
+                        <Button
+                          variant="ghost"
+                          size="xs"
+                          className="text-rose-600 hover:text-rose-700 hover:bg-rose-50"
+                          onClick={() => setDeleteEmployeeId(emp.id)}
+                          title="Delete employee"
+                          leftIcon={<Trash2 className="w-3.5 h-3.5" />}
+                        >
+                          Remove
+                        </Button>
+                      )}
                     </TableCell>
                   </TableRow>
                 ))}

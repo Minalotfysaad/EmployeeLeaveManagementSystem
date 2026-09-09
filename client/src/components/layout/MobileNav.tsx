@@ -29,14 +29,20 @@ export const MobileNav: React.FC<MobileNavProps> = ({ isOpen, onClose }) => {
 
   if (!isOpen) return null;
 
-  const links = [
-    { to: '/dashboard', label: 'Overview', icon: LayoutDashboard },
-    { to: '/requests', label: 'Requests', icon: FileText },
-    { to: '/balance', label: 'Balance', icon: PieChart },
-    { to: '/history', label: 'History', icon: History },
-    { to: '/calendar', label: 'Calendar', icon: Calendar },
-    { to: '/settings', label: 'Settings', icon: Settings },
-  ];
+  const links = isHR
+    ? [
+        { to: '/dashboard', label: 'Overview', icon: LayoutDashboard },
+        { to: '/calendar', label: 'Calendar', icon: Calendar },
+        { to: '/settings', label: 'Settings', icon: Settings },
+      ]
+    : [
+        { to: '/dashboard', label: 'Overview', icon: LayoutDashboard },
+        { to: '/requests', label: 'Requests', icon: FileText },
+        { to: '/balance', label: 'Balance', icon: PieChart },
+        { to: '/history', label: 'History', icon: History },
+        { to: '/calendar', label: 'Calendar', icon: Calendar },
+        { to: '/settings', label: 'Settings', icon: Settings },
+      ];
 
   return (
     <div className="fixed inset-0 z-50 lg:hidden flex">
@@ -64,7 +70,7 @@ export const MobileNav: React.FC<MobileNavProps> = ({ isOpen, onClose }) => {
         <div className="flex-1 overflow-y-auto p-4 space-y-6">
           <div>
             <span className="px-3 text-[10px] font-bold uppercase tracking-wider text-gray-400">
-              Employee
+              {isHR ? 'General' : 'Employee'}
             </span>
             <nav className="mt-2 space-y-1">
               {links.map((link) => {

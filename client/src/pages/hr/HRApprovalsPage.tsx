@@ -42,6 +42,7 @@ export const HRApprovalsPage: React.FC = () => {
       queryClient.invalidateQueries({ queryKey: ['hrPending'] });
       queryClient.invalidateQueries({ queryKey: ['hrDashboard'] });
       queryClient.invalidateQueries({ queryKey: ['myBalances'] });
+      queryClient.invalidateQueries({ queryKey: ['upcomingTeamLeave'] });
       closeActionModal();
     },
     onError: (err) => {

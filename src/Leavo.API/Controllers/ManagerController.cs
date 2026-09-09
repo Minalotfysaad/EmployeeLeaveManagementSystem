@@ -1,4 +1,4 @@
-﻿using Leavo.Application.Abstractions.Services;
+using Leavo.Application.Abstractions.Services;
 using Leavo.Application.Common.Models;
 using Leavo.Application.DTOs.Approval;
 using Leavo.Application.DTOs.Dashboard;
@@ -22,7 +22,7 @@ namespace Leavo.API.Controllers
         #region LeaveRequests Management Endpoints
 
         [HttpGet("pending")]
-        public async Task<ActionResult<PagedResult<PendingLeaveRequestDto>>> GetPendingManagerRequestsAsync(EmployeeQueryParameters parameters)
+        public async Task<ActionResult<PagedResult<PendingLeaveRequestDto>>> GetPendingManagerRequestsAsync([FromQuery] EmployeeQueryParameters parameters)
             => Ok(await _approvalService.GetPendingManagerRequestsAsync(parameters));
 
         [HttpPatch("{requestId:guid}/approve")]

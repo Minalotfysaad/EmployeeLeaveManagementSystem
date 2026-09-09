@@ -3,6 +3,7 @@ import { AuthUser, LoginRequestDto, RegisterRequestDto } from '../types/auth.typ
 import { authApi } from '../api/auth.api';
 import { decodeJwt, isTokenExpired } from '../utils/jwt';
 import { mockStore } from '../api/mock/mockStore';
+import { queryClient } from '../api/queryClient';
 
 interface AuthContextType {
   user: AuthUser | null;
@@ -108,6 +109,11 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
 
   const login = async (dto: LoginRequestDto) => {
     setIsLoading(true);
+    // Explicitly wipe all demo flags and clear query cache so the application solely queries the real database
+    localStorage.removeItem('leavo_demo_mode');
+    localStorage.removeItem('leavo_force_mock');
+    queryClient.clear();
+    setIsDemoMode(false);
     try {
       const res = await authApi.login(dto);
       const decoded = decodeJwt(res.token);
@@ -123,8 +129,10 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       setUser(authUser);
       setIsDemoMode(false);
       localStorage.removeItem('leavo_demo_mode');
+      localStorage.removeItem('leavo_force_mock');
       localStorage.setItem('leavo_token', res.token);
       localStorage.setItem('leavo_user', JSON.stringify(authUser));
+      queryClient.clear();
     } finally {
       setIsLoading(false);
     }
@@ -132,6 +140,10 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
 
   const register = async (dto: RegisterRequestDto) => {
     setIsLoading(true);
+    localStorage.removeItem('leavo_demo_mode');
+    localStorage.removeItem('leavo_force_mock');
+    queryClient.clear();
+    setIsDemoMode(false);
     try {
       const res = await authApi.register(dto);
       const decoded = decodeJwt(res.token);
@@ -147,17 +159,23 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       setUser(authUser);
       setIsDemoMode(false);
       localStorage.removeItem('leavo_demo_mode');
+      localStorage.removeItem('leavo_force_mock');
       localStorage.setItem('leavo_token', res.token);
       localStorage.setItem('leavo_user', JSON.stringify(authUser));
+      queryClient.clear();
     } finally {
       setIsLoading(false);
     }
   };
 
   const enterDemoMode = (persona: 'Employee' | 'Manager' | 'HR' = 'Employee') => {
+    // Reset mock store to clean defaults so every demo session starts fresh
+    mockStore.resetToDefaults();
+    queryClient.clear();
+
     let targetEmail = 'leila.vance@company.com';
     if (persona === 'Manager') targetEmail = 'david.chen@company.com';
-    if (persona === 'HR') targetEmail = 'admin@company.com';
+    if (persona === 'HR') targetEmail = 'elena.rostova@company.com';
 
     const target = mockStore.getUserByEmail(targetEmail) || mockStore.getUsers()[0];
     const demoUser: AuthUser = {
@@ -173,6 +191,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     localStorage.setItem('leavo_demo_mode', 'true');
     localStorage.setItem('leavo_user', JSON.stringify(demoUser));
     localStorage.setItem('leavo_token', 'mock-demo-token');
+    queryClient.clear();
   };
 
   const logout = useCallback(() => {
@@ -182,6 +201,10 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     localStorage.removeItem('leavo_token');
     localStorage.removeItem('leavo_user');
     localStorage.removeItem('leavo_demo_mode');
+    localStorage.removeItem('leavo_force_mock');
+    // Ensure all demo interactions in memory are discarded on session end and query cache is completely purged
+    mockStore.resetToDefaults();
+    queryClient.clear();
   }, []);
 
   // Instant role & profile switcher (active in Demo Mode)
@@ -190,7 +213,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
 
     let targetEmail = 'leila.vance@company.com';
     if (targetRole === 'Manager') targetEmail = 'david.chen@company.com';
-    if (targetRole === 'HR') targetEmail = 'admin@company.com';
+    if (targetRole === 'HR') targetEmail = 'elena.rostova@company.com';
 
     const target = mockStore.getUserByEmail(targetEmail);
     if (target) {
@@ -202,13 +225,14 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       };
       setUser(newUser);
       localStorage.setItem('leavo_user', JSON.stringify(newUser));
+      queryClient.clear();
     }
   };
 
   const roles = user?.roles || [];
   const isHR = roles.includes('HR') || roles.includes('Admin');
   const isManager = roles.includes('Manager') && !isHR;
-  const isEmployee = true; // All authenticated users are employees
+  const isEmployee = roles.includes('Employee') && !isHR;
 
   return (
     <AuthContext.Provider

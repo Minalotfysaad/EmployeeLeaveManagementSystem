@@ -11,7 +11,7 @@ import { User, Mail, Shield, Bell, CheckCircle2, RotateCcw } from 'lucide-react'
 import { mockStore } from '../../api/mock/mockStore';
 
 export const SettingsPage: React.FC = () => {
-  const { user, switchRole } = useAuth();
+  const { user, switchRole, isDemoMode } = useAuth();
   const { success } = useToast();
 
   const [notificationsEmail, setNotificationsEmail] = useState(true);
@@ -39,7 +39,7 @@ export const SettingsPage: React.FC = () => {
       <Card className="p-6">
         <div className="flex flex-col sm:flex-row items-start sm:items-center gap-5">
           <Avatar
-            name={user?.fullName || 'Leila Vance'}
+            name={user?.fullName || 'User'}
             src={
               user?.email === 'leila.vance@company.com'
                 ? 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=150&auto=format&fit=crop&q=80'
@@ -49,7 +49,7 @@ export const SettingsPage: React.FC = () => {
           />
 
           <div className="flex-1">
-            <h3 className="text-xl font-bold text-navy-900">{user?.fullName || 'Leila Vance'}</h3>
+            <h3 className="text-xl font-bold text-navy-900">{user?.fullName || 'User'}</h3>
             <p className="text-xs text-gray-500 mt-0.5">{user?.email}</p>
 
             <div className="flex items-center gap-2 mt-3">
@@ -58,18 +58,19 @@ export const SettingsPage: React.FC = () => {
                   {r}
                 </Badge>
               ))}
-              <span className="text-xs text-gray-400 font-medium">Department: Information Technology</span>
+              {isDemoMode && <span className="text-xs text-gray-400 font-medium">Department: Information Technology</span>}
             </div>
           </div>
         </div>
       </Card>
 
-      {/* Switch Demo Role Persona */}
-      <Card className="p-6">
-        <h3 className="text-base font-bold text-navy-900 mb-1">Interactive Persona Switcher</h3>
-        <p className="text-xs text-gray-500 mb-4">
-          Switch between predefined roles to preview and test role-specific workflows (approvals, administration, and team management).
-        </p>
+      {/* Switch Demo Role Persona (Demo Mode Only) */}
+      {isDemoMode && (
+        <Card className="p-6">
+          <h3 className="text-base font-bold text-navy-900 mb-1">Interactive Persona Switcher</h3>
+          <p className="text-xs text-gray-500 mb-4">
+            Switch between predefined roles to preview and test role-specific workflows (approvals, administration, and team management).
+          </p>
 
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
           <button
@@ -111,7 +112,7 @@ export const SettingsPage: React.FC = () => {
           <button
             onClick={() => {
               switchRole('HR');
-              success('Switched to System Administrator (HR Admin)');
+              success('Switched to Elena Rostova (HR Lead)');
             }}
             className={`p-4 rounded-xl border text-left transition-all ${
               user?.roles?.includes('HR')
@@ -119,14 +120,15 @@ export const SettingsPage: React.FC = () => {
                 : 'border-gray-200 hover:border-gray-300'
             }`}
           >
-            <span className="font-bold text-navy-900 text-sm block">System Administrator</span>
-            <span className="text-xs text-gray-500 block mt-0.5">Role: HR Admin</span>
+            <span className="font-bold text-navy-900 text-sm block">Elena Rostova</span>
+            <span className="text-xs text-gray-500 block mt-0.5">Role: HR Lead</span>
             <span className="text-[11px] text-sky-700 font-medium mt-2 block">
               HR Approvals, Directory, Depts, Holidays
             </span>
           </button>
         </div>
       </Card>
+      )}
 
       {/* Notifications Preferences */}
       <Card className="p-6">
@@ -167,15 +169,17 @@ export const SettingsPage: React.FC = () => {
           </div>
 
           <div className="pt-2 flex items-center justify-between">
-            <Button
-              type="button"
-              variant="outline"
-              size="sm"
-              onClick={handleResetData}
-              leftIcon={<RotateCcw className="w-3.5 h-3.5" />}
-            >
-              Reset Sample Data
-            </Button>
+            {isDemoMode ? (
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                onClick={handleResetData}
+                leftIcon={<RotateCcw className="w-3.5 h-3.5" />}
+              >
+                Reset Sample Data
+              </Button>
+            ) : <div />}
 
             <Button type="submit" variant="primary" size="sm">
               Save Preferences

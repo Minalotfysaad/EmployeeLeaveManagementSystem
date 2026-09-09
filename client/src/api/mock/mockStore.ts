@@ -5,6 +5,11 @@ import {
   INITIAL_BALANCES,
   INITIAL_LEAVE_REQUESTS,
   INITIAL_HOLIDAYS,
+  UPCOMING_TEAM_LEAVE,
+  INITIAL_CALENDAR_EVENTS,
+  CalendarLeaveEvent,
+  INITIAL_NOTIFICATIONS,
+  AppNotification,
 } from './mockData';
 import { RequestStatus, LeaveRequestDetailsDto, PendingLeaveRequestDto, CreateLeaveRequestDto } from '../../types/leaveRequest.types';
 import { BalanceDto } from '../../types/balance.types';
@@ -22,6 +27,7 @@ class MockStore {
   private balances: Record<string, BalanceDto[]>;
   private requests: (LeaveRequestDetailsDto & { employeeId: string; employeeName: string; department: string })[];
   private holidays: HolidayDetailsDto[];
+  private notifications: AppNotification[];
 
   constructor() {
     this.departments = this.load('leavo_mock_departments', INITIAL_DEPARTMENTS);
@@ -30,11 +36,12 @@ class MockStore {
     this.balances = this.load('leavo_mock_balances', INITIAL_BALANCES);
     this.requests = this.load('leavo_mock_requests', INITIAL_LEAVE_REQUESTS);
     this.holidays = this.load('leavo_mock_holidays', INITIAL_HOLIDAYS);
+    this.notifications = this.load('leavo_mock_notifications', INITIAL_NOTIFICATIONS);
   }
 
   private load<T>(key: string, fallback: T): T {
     try {
-      const stored = localStorage.getItem(key);
+      const stored = sessionStorage.getItem(key);
       return stored ? JSON.parse(stored) : fallback;
     } catch {
       return fallback;
@@ -43,31 +50,39 @@ class MockStore {
 
   private save(key: string, data: unknown) {
     try {
-      localStorage.setItem(key, JSON.stringify(data));
+      sessionStorage.setItem(key, JSON.stringify(data));
     } catch (e) {
       console.error('Storage error', e);
     }
   }
 
   public resetToDefaults() {
-    localStorage.removeItem('leavo_mock_departments');
-    localStorage.removeItem('leavo_mock_leavetypes');
-    localStorage.removeItem('leavo_mock_users');
-    localStorage.removeItem('leavo_mock_balances');
-    localStorage.removeItem('leavo_mock_requests');
-    localStorage.removeItem('leavo_mock_holidays');
+    const keys = [
+      'leavo_mock_departments',
+      'leavo_mock_leavetypes',
+      'leavo_mock_users',
+      'leavo_mock_balances',
+      'leavo_mock_requests',
+      'leavo_mock_holidays',
+      'leavo_mock_notifications',
+    ];
+    keys.forEach((k) => {
+      sessionStorage.removeItem(k);
+      localStorage.removeItem(k);
+    });
     this.departments = [...INITIAL_DEPARTMENTS];
     this.leaveTypes = [...INITIAL_LEAVE_TYPES];
     this.users = [...INITIAL_USERS];
     this.balances = JSON.parse(JSON.stringify(INITIAL_BALANCES));
     this.requests = [...INITIAL_LEAVE_REQUESTS];
     this.holidays = [...INITIAL_HOLIDAYS];
+    this.notifications = [...INITIAL_NOTIFICATIONS];
   }
 
   // Auth
   public getUserByEmail(email: string) {
     const user = this.users.find(u => u.email.toLowerCase() === email.toLowerCase());
-    if (user && user.email.toLowerCase() === 'admin@company.com') {
+    if (user && user.email.toLowerCase() === 'elena.rostova@company.com') {
       user.roles = ['HR', 'Employee'];
     }
     return user;
@@ -83,6 +98,10 @@ class MockStore {
 
   // Balances
   public getBalances(employeeId: string): BalanceDto[] {
+    const user = this.getUserById(employeeId);
+    if (user && user.roles.includes('HR') && !user.roles.includes('Employee')) {
+      return [];
+    }
     if (!this.balances[employeeId]) {
       // Default populate
       this.balances[employeeId] = this.leaveTypes.map(lt => ({
@@ -106,6 +125,18 @@ class MockStore {
 
   // Leave Requests
   public getMyRequests(employeeId: string, params: EmployeeQueryParameters = {}): PagedResult<LeaveRequestDetailsDto> {
+    const user = this.getUserById(employeeId);
+    if (user && user.roles.includes('HR') && !user.roles.includes('Employee')) {
+      return {
+        items: [],
+        page: 1,
+        pageSize: params.pageSize || 10,
+        totalCount: 0,
+        totalPages: 1,
+        hasPreviousPage: false,
+        hasNextPage: false,
+      };
+    }
     let items = this.requests.filter(r => r.employeeId === employeeId);
 
     if (params.search) {
@@ -318,14 +349,19 @@ class MockStore {
       list = list.filter(u => u.roles.includes(params.role!));
     }
 
+    const hrUsersCount = this.users.filter((u) => u.roles.includes('HR')).length;
+    const isOnlyOneHR = hrUsersCount <= 1;
+
     const page = params.page || 1;
     const pageSize = params.pageSize || 10;
     const totalCount = list.length;
     const startIndex = (page - 1) * pageSize;
-    const paginated = list.slice(startIndex, startIndex + pageSize).map(u => ({
+    const paginated = list.slice(startIndex, startIndex + pageSize).map((u) => ({
       id: u.id,
       fullName: `${u.firstName} ${u.lastName}`,
       email: u.email,
+      roles: u.roles,
+      isSoleHR: isOnlyOneHR && u.roles.includes('HR'),
     }));
 
     return {
@@ -349,7 +385,12 @@ class MockStore {
   }
 
   public deleteEmployee(id: string) {
-    this.users = this.users.filter(u => u.id !== id);
+    const hrUsersCount = this.users.filter((u) => u.roles.includes('HR')).length;
+    const user = this.getUserById(id);
+    if (user && user.roles.includes('HR') && hrUsersCount <= 1) {
+      throw new Error('Cannot delete the only HR Administrator.');
+    }
+    this.users = this.users.filter((u) => u.id !== id);
     this.save('leavo_mock_users', this.users);
   }
 
@@ -452,7 +493,7 @@ class MockStore {
       startDate: new Date(startDate).toISOString(),
       endDate: new Date(endDate).toISOString(),
       createdAt: new Date().toISOString(),
-      createdBy: 'System Administrator',
+      createdBy: 'Elena Rostova',
     };
     this.holidays.push(newHol);
     this.save('leavo_mock_holidays', this.holidays);
@@ -526,6 +567,64 @@ class MockStore {
       upcomingHolidays: this.holidays.length,
       leaveRequestsThisMonth: this.requests.length,
     };
+  }
+
+  public getUpcomingTeamLeave() {
+    const approvedRequests = this.requests.filter(
+      (r) => r.status === RequestStatus.HRApproved
+    );
+
+    const mappedFromRequests: { id: string; name: string; type: string; dates: string; avatar?: string }[] = approvedRequests.map((r) => {
+      const user = this.getUserById(r.employeeId);
+      const start = new Date(r.startDate);
+      const end = new Date(r.endDate);
+      const startMonth = start.toLocaleString('en-US', { month: 'short' });
+      const endMonth = end.toLocaleString('en-US', { month: 'short' });
+      const startDay = start.getDate();
+      const endDay = end.getDate();
+
+      const dates =
+        startMonth === endMonth
+          ? startDay === endDay
+            ? `${startMonth} ${startDay}`
+            : `${startMonth} ${startDay}-${endDay}`
+          : `${startMonth} ${startDay} - ${endMonth} ${endDay}`;
+
+      return {
+        id: `team-req-${r.id}`,
+        name: r.employeeName || (user ? `${user.firstName} ${user.lastName}` : 'Team Member'),
+        type: r.leaveType,
+        dates,
+        avatar: undefined,
+      };
+    });
+
+    const combined: { id: string; name: string; type: string; dates: string; avatar?: string }[] = [...mappedFromRequests];
+    for (const item of UPCOMING_TEAM_LEAVE) {
+      if (!combined.some((c) => c.name.toLowerCase() === item.name.toLowerCase())) {
+        combined.push(item);
+      }
+    }
+
+    return combined;
+  }
+
+  public getCalendarEvents(year: number, month: number): CalendarLeaveEvent[] {
+    return INITIAL_CALENDAR_EVENTS.filter((e) => e.year === year && e.month === month);
+  }
+
+  public getNotifications(): AppNotification[] {
+    return this.notifications;
+  }
+
+  public markNotificationAsRead(id: string) {
+    this.notifications = this.notifications.map((n) => (n.id === id ? { ...n, read: true } : n));
+    this.save('leavo_mock_notifications', this.notifications);
+  }
+
+  public markAllNotificationsAsRead() {
+    this.notifications = this.notifications.map((n) => ({ ...n, read: true }));
+    this.save('leavo_mock_notifications', this.notifications);
   }
 }
 

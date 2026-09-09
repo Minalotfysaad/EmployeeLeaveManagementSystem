@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { ChevronDown, Check } from 'lucide-react';
+import { ChevronDown, Check, Calendar } from 'lucide-react';
 import { Card, CardHeader, CardTitle, CardContent } from '../../ui/Card';
 import { BalanceDto } from '../../../types/balance.types';
 import { cn } from '../../../utils/cn';
@@ -19,41 +19,8 @@ interface LeaveCategoryData {
   ticks: number[];
 }
 
-const DEFAULT_CATEGORIES: Record<string, LeaveCategoryData> = {
-  annual: {
-    id: 'annual',
-    name: 'Annual Leave',
-    accrued: 16,
-    used: 10,
-    requested: 21.5,
-    remaining: 12,
-    maxScale: 24,
-    ticks: [24, 18, 12, 6, 0],
-  },
-  sick: {
-    id: 'sick',
-    name: 'Sick Leave',
-    accrued: 10,
-    used: 2,
-    requested: 2,
-    remaining: 8,
-    maxScale: 12,
-    ticks: [12, 9, 6, 3, 0],
-  },
-  emergency: {
-    id: 'emergency',
-    name: 'Emergency Leave',
-    accrued: 5,
-    used: 1,
-    requested: 1,
-    remaining: 4,
-    maxScale: 6,
-    ticks: [6, 4.5, 3, 1.5, 0],
-  },
-};
-
 export const LeaveBalanceCard: React.FC<LeaveBalanceCardProps> = ({ balances = [] }) => {
-  const [selectedKey, setSelectedKey] = useState<string>('annual');
+  const [selectedKey, setSelectedKey] = useState<string>('');
   const [dropdownOpen, setDropdownOpen] = useState<boolean>(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
@@ -68,32 +35,60 @@ export const LeaveBalanceCard: React.FC<LeaveBalanceCardProps> = ({ balances = [
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
-  // Synchronize with API balances if available
-  const activeCategory = React.useMemo(() => {
-    const base = DEFAULT_CATEGORIES[selectedKey] || DEFAULT_CATEGORIES.annual;
-    
-    // Check if live balance exists for selected type
-    const liveMatch = balances.find((b) =>
-      b.leaveType.toLowerCase().includes(selectedKey) ||
-      (selectedKey === 'annual' && b.leaveType.toLowerCase().includes('annual'))
-    );
-
-    if (liveMatch) {
-      const remaining = liveMatch.remainingDays;
-      const accrued = selectedKey === 'annual' ? 22 : selectedKey === 'sick' ? 10 : 5;
-      const used = Math.max(0, accrued - remaining);
-      return {
-        ...base,
-        accrued: selectedKey === 'annual' ? 16 : accrued,
-        remaining: selectedKey === 'annual' ? 12 : remaining,
-        used: selectedKey === 'annual' ? 10 : used,
-        requested: selectedKey === 'annual' ? 21.5 : Math.min(accrued, remaining + 1),
-      };
+  // Build categories list from balances
+  const categories = React.useMemo<LeaveCategoryData[]>(() => {
+    if (!balances || balances.length === 0) {
+      return [];
     }
 
-    return base;
-  }, [balances, selectedKey]);
+    return balances.map((b) => {
+      const remaining = b.remainingDays;
+      const defaultAllowance = 24;
+      const accrued = Math.max(remaining, defaultAllowance);
+      const used = Math.max(0, accrued - remaining);
+      const maxScale = Math.max(16, Math.ceil(accrued / 4) * 4);
+      const step = maxScale / 4;
+      const ticks = [maxScale, Math.round(step * 3), Math.round(step * 2), Math.round(step * 1), 0];
+      return {
+        id: b.leaveTypeId || b.leaveType,
+        name: b.leaveType,
+        accrued,
+        used,
+        requested: 0,
+        remaining,
+        maxScale,
+        ticks,
+      };
+    });
+  }, [balances]);
 
+  // Set default selection when categories change
+  useEffect(() => {
+    if (categories.length > 0 && (!selectedKey || !categories.find((c) => c.id === selectedKey))) {
+      setSelectedKey(categories[0].id);
+    }
+  }, [categories, selectedKey]);
+
+  if (categories.length === 0) {
+    return (
+      <Card className="flex flex-col h-full">
+        <CardHeader className="border-b-0 pb-1 flex flex-row items-center justify-between">
+          <CardTitle>My Leave Balance</CardTitle>
+        </CardHeader>
+        <CardContent className="flex-1 flex flex-col items-center justify-center py-12 px-4 text-center text-xs text-gray-500">
+          <div className="w-10 h-10 rounded-2xl bg-gray-50 flex items-center justify-center text-gray-400 mb-2 border border-gray-100">
+            <Calendar className="w-5 h-5" />
+          </div>
+          <p className="font-semibold text-gray-700">No leave balances allocated</p>
+          <p className="text-[11px] text-gray-400 mt-0.5 max-w-xs">
+            Your organization HR administrator has not allocated leave quotas for your account yet.
+          </p>
+        </CardContent>
+      </Card>
+    );
+  }
+
+  const activeCategory = categories.find((c) => c.id === selectedKey) || categories[0];
   const { accrued, used, requested, remaining, maxScale, ticks } = activeCategory;
 
   // Donut chart calculations (based on total allowance)
@@ -121,7 +116,7 @@ export const LeaveBalanceCard: React.FC<LeaveBalanceCardProps> = ({ balances = [
             aria-expanded={dropdownOpen}
             aria-label="Select leave category"
           >
-            <span>{activeCategory.name}</span>
+            <span>{activeCategory?.name || 'Leave Type'}</span>
             <ChevronDown
               className={cn(
                 'w-3.5 h-3.5 text-brand-teal group-hover:text-brand-darkTeal transition-transform duration-200',
@@ -133,7 +128,7 @@ export const LeaveBalanceCard: React.FC<LeaveBalanceCardProps> = ({ balances = [
           {dropdownOpen && (
             <div className="absolute right-0 mt-2 w-48 bg-white rounded-2xl border border-[#E5EAF0] shadow-dropdown p-1.5 z-30 animate-in fade-in zoom-in-95 duration-150">
               <div className="space-y-1">
-                {Object.values(DEFAULT_CATEGORIES).map((cat) => {
+                {categories.map((cat) => {
                   const isSelected = selectedKey === cat.id;
                   return (
                     <button

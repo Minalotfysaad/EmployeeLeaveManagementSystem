@@ -1,28 +1,44 @@
 import React, { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { ChevronLeft, ChevronRight, Calendar as CalendarIcon, User, Sparkles } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Calendar as CalendarIcon, User } from 'lucide-react';
 import { PageHeader } from '../../components/shared/PageHeader';
 import { Card, CardHeader, CardTitle, CardContent } from '../../components/ui/Card';
 import { Button } from '../../components/ui/Button';
 import { Avatar } from '../../components/ui/Avatar';
-import { Badge } from '../../components/ui/Badge';
 import { holidaysApi } from '../../api/holidays.api';
-import { UPCOMING_TEAM_LEAVE } from '../../api/mock/mockData';
+import { calendarApi } from '../../api/calendar.api';
+import { dashboardApi } from '../../api/dashboard.api';
 import { formatDateShort } from '../../utils/date';
+import { useAuth } from '../../hooks/useAuth';
 
 export const CalendarPage: React.FC = () => {
-  // Calendar month state: defaulting to October 2026 to match mock data
-  const [currentDate, setCurrentDate] = useState(new Date(2026, 9, 1)); // October 2026 (0-indexed 9)
+  const { isDemoMode } = useAuth();
+  // Calendar month state: defaulting to October 2026 in Demo Mode, or real current date in live mode
+  const [currentDate, setCurrentDate] = useState(() =>
+    isDemoMode ? new Date(2026, 9, 1) : new Date()
+  );
+
+  const year = currentDate.getFullYear();
+  const month = currentDate.getMonth();
 
   const { data: holidaysData } = useQuery({
     queryKey: ['holidays'],
     queryFn: () => holidaysApi.getHolidays(),
   });
 
-  const holidays = holidaysData?.items || [];
+  const { data: monthLeaves = [] } = useQuery({
+    queryKey: ['calendarEvents', year, month],
+    queryFn: () => calendarApi.getMonthEvents(year, month),
+  });
 
-  const year = currentDate.getFullYear();
-  const month = currentDate.getMonth();
+  const { data: teamLeaves = [] } = useQuery({
+    queryKey: ['upcomingTeamLeave', isDemoMode],
+    queryFn: () => dashboardApi.getUpcomingTeamLeave(),
+    staleTime: 0,
+    refetchOnMount: 'always',
+  });
+
+  const holidays = holidaysData?.items || [];
 
   const monthNames = [
     'January', 'February', 'March', 'April', 'May', 'June',
@@ -45,22 +61,8 @@ export const CalendarPage: React.FC = () => {
   };
 
   const handleToday = () => {
-    setCurrentDate(new Date(2026, 9, 1));
+    setCurrentDate(isDemoMode ? new Date(2026, 9, 1) : new Date());
   };
-
-  // Sample schedule items for October 2026 matching mockup
-  const monthLeaves = [
-    { day: 10, employee: 'David Chen', type: 'Vacation', color: 'bg-brand-lightTeal text-brand-darkTeal border-brand-teal/30' },
-    { day: 11, employee: 'David Chen', type: 'Vacation', color: 'bg-brand-lightTeal text-brand-darkTeal border-brand-teal/30' },
-    { day: 12, employee: 'Sarah Kim', type: 'Personal', color: 'bg-amber-50 text-amber-800 border-amber-200' },
-    { day: 12, employee: 'David Chen', type: 'Vacation', color: 'bg-brand-lightTeal text-brand-darkTeal border-brand-teal/30' },
-    { day: 13, employee: 'Annan Fiala', type: 'Vacation', color: 'bg-brand-lightTeal text-brand-darkTeal border-brand-teal/30' },
-    { day: 14, employee: 'David Chen', type: 'Vacation', color: 'bg-brand-lightTeal text-brand-darkTeal border-brand-teal/30' },
-    { day: 15, employee: 'Leila Vance', type: 'Vacation', color: 'bg-emerald-50 text-emerald-800 border-emerald-200' },
-    { day: 16, employee: 'Leila Vance', type: 'Vacation', color: 'bg-emerald-50 text-emerald-800 border-emerald-200' },
-    { day: 17, employee: 'Ciney Monn', type: 'Personal', color: 'bg-amber-50 text-amber-800 border-amber-200' },
-    { day: 18, employee: 'Leila Vance', type: 'Vacation', color: 'bg-emerald-50 text-emerald-800 border-emerald-200' },
-  ];
 
   return (
     <div className="space-y-6 animate-in fade-in duration-150">
@@ -121,7 +123,7 @@ export const CalendarPage: React.FC = () => {
               {/* Current month days */}
               {Array.from({ length: daysInMonth }).map((_, i) => {
                 const dayNum = i + 1;
-                const events = month === 9 ? monthLeaves.filter((e) => e.day === dayNum) : [];
+                const events = monthLeaves.filter((e) => e.day === dayNum);
 
                 return (
                   <div
@@ -131,7 +133,7 @@ export const CalendarPage: React.FC = () => {
                     <div className="flex items-center justify-between">
                       <span
                         className={`text-xs font-bold w-5 h-5 flex items-center justify-center rounded-full ${
-                          dayNum === 15 && month === 9 ? 'bg-brand-teal text-white' : 'text-gray-700'
+                          events.length > 0 ? 'bg-brand-teal text-white' : 'text-gray-700'
                         }`}
                       >
                         {dayNum}
@@ -170,20 +172,28 @@ export const CalendarPage: React.FC = () => {
               <CardTitle className="text-sm">Team Absences in {monthNames[month]}</CardTitle>
             </CardHeader>
             <CardContent className="space-y-3 p-4">
-              {UPCOMING_TEAM_LEAVE.map((item) => (
-                <div key={item.id} className="flex items-center justify-between p-2 rounded-xl hover:bg-gray-50">
-                  <div className="flex items-center gap-2.5">
-                    <Avatar name={item.name} src={item.avatar} size="sm" />
-                    <div>
-                      <p className="text-xs font-bold text-navy-900">{item.name}</p>
-                      <span className="text-[11px] text-gray-500">{item.type}</span>
-                    </div>
-                  </div>
-                  <span className="text-xs font-semibold text-brand-darkTeal bg-brand-lightTeal px-2 py-0.5 rounded-md">
-                    {item.dates}
-                  </span>
+              {teamLeaves.length === 0 ? (
+                <div className="py-6 px-2 text-center text-xs text-gray-500">
+                  <User className="w-6 h-6 text-gray-300 mx-auto mb-1.5" />
+                  <p className="font-semibold text-gray-700">No scheduled team absences</p>
+                  <p className="text-[11px] text-gray-400 mt-0.5">Approved team leaves will be listed here.</p>
                 </div>
-              ))}
+              ) : (
+                teamLeaves.map((item) => (
+                  <div key={item.id} className="flex items-center justify-between p-2 rounded-xl hover:bg-gray-50">
+                    <div className="flex items-center gap-2.5">
+                      <Avatar name={item.name} src={item.avatar} size="sm" />
+                      <div>
+                        <p className="text-xs font-bold text-navy-900">{item.name}</p>
+                        <span className="text-[11px] text-gray-500">{item.type}</span>
+                      </div>
+                    </div>
+                    <span className="text-xs font-semibold text-brand-darkTeal bg-brand-lightTeal px-2 py-0.5 rounded-md">
+                      {item.dates}
+                    </span>
+                  </div>
+                ))
+              )}
             </CardContent>
           </Card>
 

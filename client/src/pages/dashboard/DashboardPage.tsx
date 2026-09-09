@@ -7,6 +7,8 @@ import { ProfileCard } from '../../components/features/dashboard/ProfileCard';
 import { RecentActivityCard } from '../../components/features/dashboard/RecentActivityCard';
 import { MyRequestsWidget } from '../../components/features/dashboard/MyRequestsWidget';
 import { QuickActionsWidget } from '../../components/features/dashboard/QuickActionsWidget';
+import { HRPendingApprovalsWidget } from '../../components/features/dashboard/HRPendingApprovalsWidget';
+import { HRQuickActionsWidget } from '../../components/features/dashboard/HRQuickActionsWidget';
 import { StatMetricCard } from '../../components/features/dashboard/StatMetricCard';
 import { CreateLeaveRequestModal } from '../../components/features/requests/CreateLeaveRequestModal';
 import { useAuth } from '../../hooks/useAuth';
@@ -16,37 +18,40 @@ import { balancesApi } from '../../api/balances.api';
 import { Users, Clock, ShieldCheck, CalendarDays, Building2, CheckCircle2 } from 'lucide-react';
 
 export const DashboardPage: React.FC = () => {
-  const { user, isManager, isHR } = useAuth();
+  const { user, isManager, isHR, isDemoMode } = useAuth();
   const [requestModalOpen, setRequestModalOpen] = useState(false);
 
-  // Fetch employee dashboard stats
+  // Fetch employee dashboard stats (disabled for HR who have no personal balances/requests)
   const { data: empDashboard } = useQuery({
-    queryKey: ['employeeDashboard', user?.id],
+    queryKey: ['employeeDashboard', user?.id, isDemoMode],
     queryFn: () => dashboardApi.getEmployeeDashboard(user?.id),
+    enabled: !isHR,
   });
 
-  // Fetch balances
+  // Fetch balances (disabled for HR)
   const { data: balances = [] } = useQuery({
-    queryKey: ['myBalances', user?.id],
+    queryKey: ['myBalances', user?.id, isDemoMode],
     queryFn: () => balancesApi.getMyBalances(user?.id),
+    enabled: !isHR,
   });
 
-  // Fetch recent requests
+  // Fetch recent requests (disabled for HR)
   const { data: myRequestsData } = useQuery({
-    queryKey: ['myRequests', user?.id],
+    queryKey: ['myRequests', user?.id, isDemoMode],
     queryFn: () => leaveRequestsApi.getMyLeaveRequests({ page: 1, pageSize: 5 }, user?.id),
+    enabled: !isHR,
   });
 
   // Fetch manager dashboard if manager
   const { data: mgrDashboard } = useQuery({
-    queryKey: ['managerDashboard'],
+    queryKey: ['managerDashboard', user?.id, isDemoMode],
     queryFn: () => dashboardApi.getManagerDashboard(),
     enabled: isManager,
   });
 
   // Fetch HR dashboard if HR
   const { data: hrDashboard } = useQuery({
-    queryKey: ['hrDashboard'],
+    queryKey: ['hrDashboard', user?.id, isDemoMode],
     queryFn: () => dashboardApi.getHRDashboard(),
     enabled: isHR,
   });
@@ -116,44 +121,70 @@ export const DashboardPage: React.FC = () => {
         </div>
       )}
 
-      {/* Main Visual Dashboard Cards Grid (Aligned with Mockup) */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch">
-        {/* Row 1, Col 1: My Leave Balance (5 cols on large screens) */}
-        <div className="lg:col-span-6 xl:col-span-5 flex flex-col">
-          <LeaveBalanceCard balances={balances} />
-        </div>
+      {/* Main Visual Dashboard Cards Grid */}
+      {isHR ? (
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch">
+          {/* Row 1, Col 1: Upcoming Team Leave across Organization (7 cols) */}
+          <div className="lg:col-span-7 flex flex-col">
+            <UpcomingTeamLeaveCard />
+          </div>
 
-        {/* Row 1, Col 2: Upcoming Team Leave (4 cols) */}
-        <div className="lg:col-span-6 xl:col-span-4 flex flex-col">
-          <UpcomingTeamLeaveCard />
-        </div>
+          {/* Row 1, Col 2: Profile Card (5 cols) */}
+          <div className="lg:col-span-5 flex flex-col">
+            <ProfileCard />
+          </div>
 
-        {/* Row 1, Col 3: Profile Card (3 cols) */}
-        <div className="lg:col-span-12 xl:col-span-3 flex flex-col">
-          <ProfileCard />
-        </div>
+          {/* Row 2, Col 1: Pending HR Approvals (7 cols) */}
+          <div className="lg:col-span-7 flex flex-col">
+            <HRPendingApprovalsWidget />
+          </div>
 
-        {/* Row 2, Col 1: Recent Activity (5 cols) */}
-        <div className="lg:col-span-6 xl:col-span-5 flex flex-col">
-          <RecentActivityCard />
+          {/* Row 2, Col 2: HR Administration Quick Actions (5 cols) */}
+          <div className="lg:col-span-5 flex flex-col">
+            <HRQuickActionsWidget />
+          </div>
         </div>
+      ) : (
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch">
+          {/* Row 1, Col 1: My Leave Balance (5 cols on large screens) */}
+          <div className="lg:col-span-6 xl:col-span-5 flex flex-col">
+            <LeaveBalanceCard balances={balances} />
+          </div>
 
-        {/* Row 2, Col 2: My Requests (4 cols) */}
-        <div className="lg:col-span-6 xl:col-span-4 flex flex-col">
-          <MyRequestsWidget requests={myRequestsData?.items || []} />
+          {/* Row 1, Col 2: Upcoming Team Leave (4 cols) */}
+          <div className="lg:col-span-6 xl:col-span-4 flex flex-col">
+            <UpcomingTeamLeaveCard />
+          </div>
+
+          {/* Row 1, Col 3: Profile Card (3 cols) */}
+          <div className="lg:col-span-12 xl:col-span-3 flex flex-col">
+            <ProfileCard />
+          </div>
+
+          {/* Row 2, Col 1: Recent Activity (5 cols) */}
+          <div className="lg:col-span-6 xl:col-span-5 flex flex-col">
+            <RecentActivityCard requests={myRequestsData?.items || []} />
+          </div>
+
+          {/* Row 2, Col 2: My Requests (4 cols) */}
+          <div className="lg:col-span-6 xl:col-span-4 flex flex-col">
+            <MyRequestsWidget requests={myRequestsData?.items || []} />
+          </div>
+
+          {/* Row 2, Col 3: Quick Actions (3 cols) */}
+          <div className="lg:col-span-12 xl:col-span-3 flex flex-col">
+            <QuickActionsWidget onRequestLeave={() => setRequestModalOpen(true)} />
+          </div>
         </div>
+      )}
 
-        {/* Row 2, Col 3: Quick Actions (3 cols) */}
-        <div className="lg:col-span-12 xl:col-span-3 flex flex-col">
-          <QuickActionsWidget onRequestLeave={() => setRequestModalOpen(true)} />
-        </div>
-      </div>
-
-      {/* Create Leave Request Modal */}
-      <CreateLeaveRequestModal
-        isOpen={requestModalOpen}
-        onClose={() => setRequestModalOpen(false)}
-      />
+      {/* Create Leave Request Modal (Employees & Managers only) */}
+      {!isHR && (
+        <CreateLeaveRequestModal
+          isOpen={requestModalOpen}
+          onClose={() => setRequestModalOpen(false)}
+        />
+      )}
     </div>
   );
 };

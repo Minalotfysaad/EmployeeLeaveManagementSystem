@@ -4,17 +4,19 @@ import { Calendar as CalendarIcon } from 'lucide-react';
 import { formatDate } from '../../../utils/date';
 
 export const WelcomeBanner: React.FC = () => {
-  const { user } = useAuth();
+  const { user, isHR } = useAuth();
   const firstName = user?.fullName?.split(' ')[0] || 'there';
 
   return (
     <div className="mb-6 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
       <div>
         <h1 className="text-2xl sm:text-3xl font-extrabold text-navy-900 tracking-tight font-sans">
-          Welcome back, {user?.fullName || 'Leila Vance'}!
+          Welcome back, {user?.fullName || firstName}!
         </h1>
         <p className="text-xs sm:text-sm text-gray-500 mt-1">
-          Track your leave balances, view team availability, and manage time off requests.
+          {isHR
+            ? 'Manage organization leave policies, department staff, and approval workflows.'
+            : 'Track your leave balances, view team availability, and manage time off requests.'}
         </p>
       </div>
 
