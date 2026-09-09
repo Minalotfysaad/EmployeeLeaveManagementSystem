@@ -1,4 +1,4 @@
-
+﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.0.31903.59
@@ -14,6 +14,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Leavo.Infrastructure", "src\Leavo.Infrastructure\Leavo.Infrastructure.csproj", "{484EF9DF-1B2D-4F67-B626-ED76F9366EDF}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Leavo.API", "src\Leavo.API\Leavo.API.csproj", "{1165C938-1DB5-475B-AAD2-1C09B13B7A17}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Leavo.Application.Tests", "tests\Leavo.Application.Tests\Leavo.Application.Tests.csproj", "{521F2AEB-1B24-451F-9738-8E077CD88018}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -73,6 +75,18 @@ Global
 		{1165C938-1DB5-475B-AAD2-1C09B13B7A17}.Release|x64.Build.0 = Release|Any CPU
 		{1165C938-1DB5-475B-AAD2-1C09B13B7A17}.Release|x86.ActiveCfg = Release|Any CPU
 		{1165C938-1DB5-475B-AAD2-1C09B13B7A17}.Release|x86.Build.0 = Release|Any CPU
+		{521F2AEB-1B24-451F-9738-8E077CD88018}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{521F2AEB-1B24-451F-9738-8E077CD88018}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{521F2AEB-1B24-451F-9738-8E077CD88018}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{521F2AEB-1B24-451F-9738-8E077CD88018}.Debug|x64.Build.0 = Debug|Any CPU
+		{521F2AEB-1B24-451F-9738-8E077CD88018}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{521F2AEB-1B24-451F-9738-8E077CD88018}.Debug|x86.Build.0 = Debug|Any CPU
+		{521F2AEB-1B24-451F-9738-8E077CD88018}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{521F2AEB-1B24-451F-9738-8E077CD88018}.Release|Any CPU.Build.0 = Release|Any CPU
+		{521F2AEB-1B24-451F-9738-8E077CD88018}.Release|x64.ActiveCfg = Release|Any CPU
+		{521F2AEB-1B24-451F-9738-8E077CD88018}.Release|x64.Build.0 = Release|Any CPU
+		{521F2AEB-1B24-451F-9738-8E077CD88018}.Release|x86.ActiveCfg = Release|Any CPU
+		{521F2AEB-1B24-451F-9738-8E077CD88018}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -82,5 +96,6 @@ Global
 		{7B9D885E-8E99-49FD-A73F-5761F7E5476E} = {C28C23AC-E57F-89F0-3AFD-E7016EBBA075}
 		{484EF9DF-1B2D-4F67-B626-ED76F9366EDF} = {C28C23AC-E57F-89F0-3AFD-E7016EBBA075}
 		{1165C938-1DB5-475B-AAD2-1C09B13B7A17} = {C28C23AC-E57F-89F0-3AFD-E7016EBBA075}
+		{521F2AEB-1B24-451F-9738-8E077CD88018} = {E6D15A01-C783-49F7-943C-311AC2D38A23}
 	EndGlobalSection
 EndGlobal

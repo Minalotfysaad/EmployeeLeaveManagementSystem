@@ -6,6 +6,6 @@
     <Project Path="src/Leavo.Infrastructure/Leavo.Infrastructure.csproj" />
   </Folder>
   <Folder Name="/tests/">
-    <Project Path="Leavo.Application.Tests/Leavo.Application.Tests.csproj" Id="a4e4b104-0775-4aa6-a8c0-443f9ae43367" />
+    <Project Path="tests/Leavo.Application.Tests/Leavo.Application.Tests.csproj" Id="a4e4b104-0775-4aa6-a8c0-443f9ae43367" />
   </Folder>
 </Solution>
