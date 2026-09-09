@@ -63,8 +63,8 @@ export const LoginPage: React.FC = () => {
         <div className="absolute -bottom-24 -right-24 w-96 h-96 bg-brand-orange/15 rounded-full blur-3xl pointer-events-none" />
 
         {/* Brand Logo */}
-        <div className="relative z-10">
-          <Logo variant="dark" size="lg" showTagline />
+        <div className="relative z-10 flex flex-col items-start text-left">
+          <Logo variant="dark" size="lg" showTagline align="left" className="items-start text-left" />
         </div>
 
         {/* Center Showcase Statement */}
@@ -96,7 +96,7 @@ export const LoginPage: React.FC = () => {
 
         {/* Footer info */}
         <div className="relative z-10 text-xs text-gray-400">
-          © {new Date().getFullYear()} Leavo SaaS Platform. Portfolio Edition.
+          © {new Date().getFullYear()} Mina Lotfy Saad — Leavo SaaS Platform. Portfolio Edition.
         </div>
       </div>
 

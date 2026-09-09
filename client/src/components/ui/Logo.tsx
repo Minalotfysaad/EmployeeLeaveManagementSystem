@@ -7,6 +7,7 @@ interface LogoProps {
   showTagline?: boolean;
   collapsed?: boolean;
   className?: string;
+  align?: 'left' | 'center';
 }
 
 export const Logo: React.FC<LogoProps> = ({
@@ -15,6 +16,7 @@ export const Logo: React.FC<LogoProps> = ({
   showTagline = false,
   collapsed = false,
   className,
+  align = 'center',
 }) => {
   const isDark = variant === 'dark';
   const textColor = isDark ? '#FFFFFF' : '#13263D';
@@ -85,8 +87,14 @@ export const Logo: React.FC<LogoProps> = ({
 
   // Full brand logo (Icon + Wordmark)
   return (
-    <div className={cn('inline-flex flex-col items-center justify-center select-none', className)}>
-      <div className="flex items-center justify-center">
+    <div
+      className={cn(
+        'inline-flex flex-col select-none',
+        align === 'left' ? 'items-start justify-start text-left' : 'items-center justify-center text-center',
+        className
+      )}
+    >
+      <div className={cn('flex', align === 'left' ? 'items-start justify-start' : 'items-center justify-center')}>
         <svg
           viewBox="0 0 645 162"
           fill="none"
@@ -158,6 +166,7 @@ export const Logo: React.FC<LogoProps> = ({
         <span
           className={cn(
             'font-medium tracking-normal mt-1 leading-tight',
+            align === 'left' ? 'text-left' : 'text-center',
             sizeConfig.tagline,
             isDark ? 'text-gray-300' : 'text-gray-500'
           )}
