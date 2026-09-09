@@ -164,11 +164,12 @@ export const LoginPage: React.FC = () => {
           </div>
 
           {/* Divider */}
-          <div className="relative flex items-center justify-center my-4">
-            <div className="border-t border-gray-200 w-full" />
-            <span className="bg-white px-3 text-[10px] font-bold text-gray-400 uppercase tracking-wider">
+          <div className="flex items-center my-4">
+            <div className="flex-1 border-t border-gray-200" />
+            <span className="px-3 text-[10px] font-bold text-gray-400 uppercase tracking-wider">
               or
             </span>
+            <div className="flex-1 border-t border-gray-200" />
           </div>
 
           {/* Professional Demo Environment Action */}
