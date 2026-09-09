@@ -1,4 +1,4 @@
-﻿
+
 using Leavo.API.Extensions;
 using Leavo.Application.Extentions;
 using Leavo.Infrastructure.Extensions;
@@ -51,6 +51,17 @@ namespace Leavo.API
             builder.Services.AddApplicationServices();
             builder.Services.AddAPIServices();
 
+            builder.Services.AddCors(options =>
+            {
+                options.AddPolicy("AllowClient", policy =>
+                {
+                    policy.WithOrigins("http://localhost:5173", "http://localhost:3000", "http://127.0.0.1:5173")
+                          .AllowAnyMethod()
+                          .AllowAnyHeader()
+                          .AllowCredentials();
+                });
+            });
+
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.
@@ -69,6 +80,8 @@ namespace Leavo.API
             });
 
             app.UseHttpsRedirection();
+
+            app.UseCors("AllowClient");
 
             app.UseAuthentication();
 
