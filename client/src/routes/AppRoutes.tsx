@@ -45,8 +45,8 @@ export const AppRoutes: React.FC = () => {
           <Route path="/calendar" element={<CalendarPage />} />
           <Route path="/settings" element={<SettingsPage />} />
 
-          {/* Manager Routes */}
-          <Route element={<RoleRoute allowedRoles={['Manager', 'HR']} />}>
+          {/* Manager Routes (HR is restricted from manager pending approvals) */}
+          <Route element={<RoleRoute allowedRoles={['Manager']} />}>
             <Route path="/manager/approvals" element={<PendingApprovalsPage />} />
             <Route path="/manager/team" element={<TeamPage />} />
           </Route>

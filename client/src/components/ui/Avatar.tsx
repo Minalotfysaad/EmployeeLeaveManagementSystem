@@ -48,17 +48,17 @@ export const Avatar: React.FC<AvatarProps> = ({
   };
 
   return (
-    <div className={cn('relative inline-flex flex-shrink-0 select-none', className)}>
+    <div className={cn('relative inline-flex flex-shrink-0 select-none rounded-full', className)}>
       {src ? (
         <img
           src={src}
           alt={name}
-          className={cn('rounded-full object-cover shadow-sm ring-1 ring-gray-200/50', sizes[size])}
+          className={cn('rounded-full object-cover', sizes[size])}
         />
       ) : (
         <div
           className={cn(
-            'rounded-full bg-gradient-to-br from-navy-800 to-navy-950 text-white flex items-center justify-center font-sans shadow-sm ring-1 ring-white/10',
+            'rounded-full bg-gradient-to-br from-navy-800 to-navy-950 text-white flex items-center justify-center font-sans font-semibold',
             sizes[size]
           )}
         >

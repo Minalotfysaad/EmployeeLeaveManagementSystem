@@ -207,7 +207,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
 
   const roles = user?.roles || [];
   const isHR = roles.includes('HR') || roles.includes('Admin');
-  const isManager = roles.includes('Manager') || isHR;
+  const isManager = roles.includes('Manager') && !isHR;
   const isEmployee = true; // All authenticated users are employees
 
   return (

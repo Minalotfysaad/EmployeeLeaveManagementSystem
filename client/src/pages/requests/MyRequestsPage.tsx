@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { PlusCircle, Search, Calendar, Filter, Eye, XCircle } from 'lucide-react';
+import { PlusCircle, Search, Calendar, Filter, Eye, XCircle, ChevronDown } from 'lucide-react';
 import { PageHeader } from '../../components/shared/PageHeader';
 import { SearchFilterBar } from '../../components/shared/SearchFilterBar';
 import { StatusBadge } from '../../components/shared/StatusBadge';
@@ -104,22 +104,25 @@ export const MyRequestsPage: React.FC = () => {
         >
           <div className="flex items-center gap-2">
             <span className="text-xs font-semibold text-gray-500 whitespace-nowrap">Filter Status:</span>
-            <select
-              value={statusFilter}
-              onChange={(e) => {
-                setStatusFilter(e.target.value);
-                setPage(1);
-              }}
-              className="bg-white text-gray-800 text-xs rounded-xl border border-gray-200 py-2 px-3 focus:outline-none focus:border-brand-teal"
-            >
-              <option value="all">All Statuses</option>
-              <option value={String(RequestStatus.Pending)}>Pending Manager</option>
-              <option value={String(RequestStatus.ManagerApproved)}>Manager Approved</option>
-              <option value={String(RequestStatus.HRApproved)}>Fully Approved</option>
-              <option value={String(RequestStatus.RejectedByManager)}>Rejected by Manager</option>
-              <option value={String(RequestStatus.RejectedByHR)}>Rejected by HR</option>
-              <option value={String(RequestStatus.Cancelled)}>Cancelled</option>
-            </select>
+            <div className="relative flex items-center group">
+              <select
+                value={statusFilter}
+                onChange={(e) => {
+                  setStatusFilter(e.target.value);
+                  setPage(1);
+                }}
+                className="appearance-none bg-[#F8FAFC] hover:bg-white text-gray-800 text-xs font-medium rounded-xl border border-gray-200/90 hover:border-gray-300 py-2 pl-3 pr-8 shadow-2xs transition-all cursor-pointer focus:outline-none focus:bg-white focus:border-brand-teal focus:ring-2 focus:ring-brand-teal/15"
+              >
+                <option value="all">All Statuses</option>
+                <option value={String(RequestStatus.Pending)}>Pending Manager</option>
+                <option value={String(RequestStatus.ManagerApproved)}>Manager Approved</option>
+                <option value={String(RequestStatus.HRApproved)}>Fully Approved</option>
+                <option value={String(RequestStatus.RejectedByManager)}>Rejected by Manager</option>
+                <option value={String(RequestStatus.RejectedByHR)}>Rejected by HR</option>
+                <option value={String(RequestStatus.Cancelled)}>Cancelled</option>
+              </select>
+              <ChevronDown className="w-3.5 h-3.5 text-gray-400 group-hover:text-gray-600 pointer-events-none absolute right-2.5 transition-colors" />
+            </div>
           </div>
         </SearchFilterBar>
 

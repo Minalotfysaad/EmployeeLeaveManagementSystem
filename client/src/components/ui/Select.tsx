@@ -28,13 +28,13 @@ export const Select = forwardRef<HTMLSelectElement, SelectProps>(
           </label>
         )}
 
-        <div className="relative flex items-center">
+        <div className="relative flex items-center group">
           <select
             id={selectId}
             ref={ref}
             className={cn(
-              'w-full bg-white text-gray-900 text-sm rounded-xl border border-gray-200 py-2.5 pl-3.5 pr-10 transition-all duration-150 appearance-none cursor-pointer',
-              'focus:outline-none focus:border-brand-teal focus:ring-2 focus:ring-brand-teal/15',
+              'w-full bg-[#FBFBFC] hover:bg-white text-gray-800 text-sm rounded-xl border border-gray-200/90 hover:border-gray-300 py-2.5 pl-3.5 pr-10 transition-all duration-150 appearance-none cursor-pointer shadow-2xs font-medium',
+              'focus:outline-none focus:bg-white focus:border-brand-teal focus:ring-4 focus:ring-brand-teal/10',
               'disabled:bg-gray-50 disabled:text-gray-400 disabled:cursor-not-allowed',
               error && 'border-rose-400 focus:border-rose-500 focus:ring-rose-500/15',
               className
@@ -43,15 +43,15 @@ export const Select = forwardRef<HTMLSelectElement, SelectProps>(
           >
             {options
               ? options.map((opt) => (
-                  <option key={opt.value} value={opt.value} disabled={opt.disabled}>
+                  <option key={opt.value} value={opt.value} disabled={opt.disabled} className="py-2 text-gray-800 bg-white">
                     {opt.label}
                   </option>
                 ))
               : children}
           </select>
 
-          <div className="absolute right-3.5 flex items-center pointer-events-none text-gray-400">
-            <ChevronDown className="w-4 h-4" />
+          <div className="absolute right-3.5 flex items-center pointer-events-none text-gray-400 group-hover:text-gray-600 transition-colors">
+            <ChevronDown className="w-4 h-4 transition-transform duration-150" />
           </div>
         </div>
 

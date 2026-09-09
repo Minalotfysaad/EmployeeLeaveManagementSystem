@@ -111,7 +111,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ className }) => {
         </div>
 
         {/* Manager Section */}
-        {isManager && (
+        {isManager && !isHR && (
           <div>
             {!collapsed && (
               <span className="px-3 text-[11px] font-bold uppercase tracking-wider text-brand-orange">

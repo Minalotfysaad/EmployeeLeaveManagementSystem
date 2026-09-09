@@ -27,7 +27,7 @@ export const ProfileCard: React.FC = () => {
               : undefined
           }
           size="xl"
-          className="mb-3 ring-4 ring-brand-teal/15 shadow-sm"
+          className="mb-3"
         />
 
         <h4 className="text-base font-bold text-navy-900 leading-snug">{user?.fullName || 'Leila Vance'}</h4>

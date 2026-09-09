@@ -10,7 +10,7 @@ import { StatMetricCard } from '../../components/features/dashboard/StatMetricCa
 import { leaveRequestsApi } from '../../api/leaveRequests.api';
 import { useAuth } from '../../hooks/useAuth';
 import { formatDateRange, formatDate } from '../../utils/date';
-import { History, Calendar, CheckCircle2, XCircle } from 'lucide-react';
+import { History, Calendar, CheckCircle2, XCircle, ChevronDown } from 'lucide-react';
 import { RequestStatus } from '../../types/leaveRequest.types';
 
 export const LeaveHistoryPage: React.FC = () => {
@@ -74,14 +74,17 @@ export const LeaveHistoryPage: React.FC = () => {
       <Card className="p-4">
         <div className="flex items-center justify-between mb-4">
           <h3 className="text-sm font-bold text-navy-900 uppercase tracking-wider">Historical Records</h3>
-          <select
-            value={filterYear}
-            onChange={(e) => setFilterYear(e.target.value)}
-            className="bg-white text-gray-800 text-xs rounded-xl border border-gray-200 py-1.5 px-3 focus:outline-none focus:border-brand-teal"
-          >
-            <option value="2026">Year 2026</option>
-            <option value="2025">Year 2025</option>
-          </select>
+          <div className="relative flex items-center group">
+            <select
+              value={filterYear}
+              onChange={(e) => setFilterYear(e.target.value)}
+              className="appearance-none bg-[#F8FAFC] hover:bg-white text-gray-800 text-xs font-medium rounded-xl border border-gray-200/90 hover:border-gray-300 py-1.5 pl-3 pr-8 shadow-2xs transition-all cursor-pointer focus:outline-none focus:bg-white focus:border-brand-teal focus:ring-2 focus:ring-brand-teal/15"
+            >
+              <option value="2026">Year 2026</option>
+              <option value="2025">Year 2025</option>
+            </select>
+            <ChevronDown className="w-3.5 h-3.5 text-gray-400 group-hover:text-gray-600 pointer-events-none absolute right-2.5 transition-colors" />
+          </div>
         </div>
 
         {isLoading ? (

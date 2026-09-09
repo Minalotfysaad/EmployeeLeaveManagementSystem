@@ -11,6 +11,7 @@ import {
   PieChart,
   Trash2,
   Mail,
+  ChevronDown,
 } from 'lucide-react';
 import { PageHeader } from '../../components/shared/PageHeader';
 import { SearchFilterBar } from '../../components/shared/SearchFilterBar';
@@ -155,35 +156,41 @@ export const EmployeesPage: React.FC = () => {
           placeholder="Search by employee name or email..."
         >
           <div className="flex items-center gap-2 flex-wrap">
-            <select
-              value={roleFilter}
-              onChange={(e) => {
-                setRoleFilter(e.target.value);
-                setPage(1);
-              }}
-              className="bg-white text-gray-800 text-xs rounded-xl border border-gray-200 py-2 px-3 focus:outline-none focus:border-brand-teal"
-            >
-              <option value="">All Roles</option>
-              <option value="Employee">Employee</option>
-              <option value="Manager">Manager</option>
-              <option value="HR">HR</option>
-            </select>
+            <div className="relative flex items-center group">
+              <select
+                value={roleFilter}
+                onChange={(e) => {
+                  setRoleFilter(e.target.value);
+                  setPage(1);
+                }}
+                className="appearance-none bg-[#F8FAFC] hover:bg-white text-gray-800 text-xs font-medium rounded-xl border border-gray-200/90 hover:border-gray-300 py-2 pl-3 pr-8 shadow-2xs transition-all cursor-pointer focus:outline-none focus:bg-white focus:border-brand-teal focus:ring-2 focus:ring-brand-teal/15"
+              >
+                <option value="">All Roles</option>
+                <option value="Employee">Employee</option>
+                <option value="Manager">Manager</option>
+                <option value="HR">HR</option>
+              </select>
+              <ChevronDown className="w-3.5 h-3.5 text-gray-400 group-hover:text-gray-600 pointer-events-none absolute right-2.5 transition-colors" />
+            </div>
 
-            <select
-              value={departmentFilter}
-              onChange={(e) => {
-                setDepartmentFilter(e.target.value);
-                setPage(1);
-              }}
-              className="bg-white text-gray-800 text-xs rounded-xl border border-gray-200 py-2 px-3 focus:outline-none focus:border-brand-teal"
-            >
-              <option value="">All Departments</option>
-              {departments.map((d) => (
-                <option key={d.id} value={d.id}>
-                  {d.name}
-                </option>
-              ))}
-            </select>
+            <div className="relative flex items-center group">
+              <select
+                value={departmentFilter}
+                onChange={(e) => {
+                  setDepartmentFilter(e.target.value);
+                  setPage(1);
+                }}
+                className="appearance-none bg-[#F8FAFC] hover:bg-white text-gray-800 text-xs font-medium rounded-xl border border-gray-200/90 hover:border-gray-300 py-2 pl-3 pr-8 shadow-2xs transition-all cursor-pointer focus:outline-none focus:bg-white focus:border-brand-teal focus:ring-2 focus:ring-brand-teal/15"
+              >
+                <option value="">All Departments</option>
+                {departments.map((d) => (
+                  <option key={d.id} value={d.id}>
+                    {d.name}
+                  </option>
+                ))}
+              </select>
+              <ChevronDown className="w-3.5 h-3.5 text-gray-400 group-hover:text-gray-600 pointer-events-none absolute right-2.5 transition-colors" />
+            </div>
           </div>
         </SearchFilterBar>
 

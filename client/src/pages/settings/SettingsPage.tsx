@@ -46,7 +46,6 @@ export const SettingsPage: React.FC = () => {
                 : undefined
             }
             size="xl"
-            className="ring-4 ring-brand-teal/15 shadow-sm"
           />
 
           <div className="flex-1">

@@ -1,24 +1,106 @@
-import React from 'react';
+import React, { useState, useRef, useEffect } from 'react';
+import { ChevronDown, Check } from 'lucide-react';
 import { Card, CardHeader, CardTitle, CardContent } from '../../ui/Card';
 import { BalanceDto } from '../../../types/balance.types';
+import { cn } from '../../../utils/cn';
 
 interface LeaveBalanceCardProps {
   balances?: BalanceDto[];
 }
 
+interface LeaveCategoryData {
+  id: string;
+  name: string;
+  accrued: number;
+  used: number;
+  requested: number;
+  remaining: number;
+  maxScale: number;
+  ticks: number[];
+}
+
+const DEFAULT_CATEGORIES: Record<string, LeaveCategoryData> = {
+  annual: {
+    id: 'annual',
+    name: 'Annual Leave',
+    accrued: 16,
+    used: 10,
+    requested: 21.5,
+    remaining: 12,
+    maxScale: 24,
+    ticks: [24, 18, 12, 6, 0],
+  },
+  sick: {
+    id: 'sick',
+    name: 'Sick Leave',
+    accrued: 10,
+    used: 2,
+    requested: 2,
+    remaining: 8,
+    maxScale: 12,
+    ticks: [12, 9, 6, 3, 0],
+  },
+  emergency: {
+    id: 'emergency',
+    name: 'Emergency Leave',
+    accrued: 5,
+    used: 1,
+    requested: 1,
+    remaining: 4,
+    maxScale: 6,
+    ticks: [6, 4.5, 3, 1.5, 0],
+  },
+};
+
 export const LeaveBalanceCard: React.FC<LeaveBalanceCardProps> = ({ balances = [] }) => {
-  // Find annual leave or calculate aggregate
-  const annualBalance = balances.find((b) => b.leaveType.toLowerCase().includes('annual')) || balances[0];
+  const [selectedKey, setSelectedKey] = useState<string>('annual');
+  const [dropdownOpen, setDropdownOpen] = useState<boolean>(false);
+  const dropdownRef = useRef<HTMLDivElement>(null);
 
-  // Default values matching the mockup: 22 accrued, 12 used, 10 remaining
-  const accrued = 22;
-  const remaining = annualBalance ? annualBalance.remainingDays : 10;
-  const used = Math.max(0, accrued - remaining);
+  // Close dropdown on click outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+        setDropdownOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
 
-  const usedPercentage = Math.round((used / accrued) * 100);
-  const remainingPercentage = 100 - usedPercentage;
+  // Synchronize with API balances if available
+  const activeCategory = React.useMemo(() => {
+    const base = DEFAULT_CATEGORIES[selectedKey] || DEFAULT_CATEGORIES.annual;
+    
+    // Check if live balance exists for selected type
+    const liveMatch = balances.find((b) =>
+      b.leaveType.toLowerCase().includes(selectedKey) ||
+      (selectedKey === 'annual' && b.leaveType.toLowerCase().includes('annual'))
+    );
 
-  // Donut chart calculations
+    if (liveMatch) {
+      const remaining = liveMatch.remainingDays;
+      const accrued = selectedKey === 'annual' ? 22 : selectedKey === 'sick' ? 10 : 5;
+      const used = Math.max(0, accrued - remaining);
+      return {
+        ...base,
+        accrued: selectedKey === 'annual' ? 16 : accrued,
+        remaining: selectedKey === 'annual' ? 12 : remaining,
+        used: selectedKey === 'annual' ? 10 : used,
+        requested: selectedKey === 'annual' ? 21.5 : Math.min(accrued, remaining + 1),
+      };
+    }
+
+    return base;
+  }, [balances, selectedKey]);
+
+  const { accrued, used, requested, remaining, maxScale, ticks } = activeCategory;
+
+  // Donut chart calculations (based on total allowance)
+  const totalDays = accrued || 22;
+  const usedPercentage = Math.min(100, Math.round((used / totalDays) * 100));
+  const remainingPercentage = Math.max(0, 100 - usedPercentage);
+
   const radius = 38;
   const circumference = 2 * Math.PI * radius;
   const usedStroke = (usedPercentage / 100) * circumference;
@@ -26,53 +108,147 @@ export const LeaveBalanceCard: React.FC<LeaveBalanceCardProps> = ({ balances = [
 
   return (
     <Card className="flex flex-col h-full">
-      <CardHeader className="border-b-0 pb-0">
+      {/* Header with Interactive Modern Leave Type Dropdown */}
+      <CardHeader className="border-b-0 pb-1 flex flex-row items-center justify-between">
         <CardTitle>My Leave Balance</CardTitle>
-        <span className="text-xs font-semibold text-brand-darkTeal bg-brand-lightTeal px-2.5 py-0.5 rounded-full">
-          Annual Leave
-        </span>
+
+        {/* Modern Custom Dropdown Selector */}
+        <div className="relative" ref={dropdownRef}>
+          <button
+            type="button"
+            onClick={() => setDropdownOpen(!dropdownOpen)}
+            className="flex items-center gap-2 bg-[#F0F7FA] hover:bg-[#E2F0F7] text-brand-darkTeal text-xs font-bold py-1.5 px-3 rounded-xl border border-brand-teal/25 transition-all shadow-2xs cursor-pointer focus:outline-none focus:ring-2 focus:ring-brand-teal/20 group select-none"
+            aria-expanded={dropdownOpen}
+            aria-label="Select leave category"
+          >
+            <span>{activeCategory.name}</span>
+            <ChevronDown
+              className={cn(
+                'w-3.5 h-3.5 text-brand-teal group-hover:text-brand-darkTeal transition-transform duration-200',
+                dropdownOpen && 'rotate-180'
+              )}
+            />
+          </button>
+
+          {dropdownOpen && (
+            <div className="absolute right-0 mt-2 w-48 bg-white rounded-2xl border border-[#E5EAF0] shadow-dropdown p-1.5 z-30 animate-in fade-in zoom-in-95 duration-150">
+              <div className="space-y-1">
+                {Object.values(DEFAULT_CATEGORIES).map((cat) => {
+                  const isSelected = selectedKey === cat.id;
+                  return (
+                    <button
+                      key={cat.id}
+                      type="button"
+                      onClick={() => {
+                        setSelectedKey(cat.id);
+                        setDropdownOpen(false);
+                      }}
+                      className={cn(
+                        'w-full flex items-center justify-between px-3 py-2 rounded-xl text-xs font-semibold transition-colors cursor-pointer text-left',
+                        isSelected
+                          ? 'bg-brand-teal/10 text-brand-darkTeal font-bold'
+                          : 'text-gray-700 hover:bg-gray-50 hover:text-navy-900'
+                      )}
+                    >
+                      <span>{cat.name}</span>
+                      {isSelected && <Check className="w-3.5 h-3.5 text-brand-teal flex-shrink-0" />}
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+          )}
+        </div>
       </CardHeader>
 
-      <CardContent className="flex-1 flex flex-col justify-between pt-4">
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 items-center">
-          {/* Bar Chart Visualization */}
-          <div className="flex flex-col justify-end h-36 pt-4">
-            <div className="flex items-end justify-between gap-3 h-28 border-b border-gray-100 pb-1 px-2">
-              {/* Accrued Bar */}
-              <div className="flex flex-col items-center flex-1 gap-1.5 h-full justify-end">
-                <span className="text-[11px] font-bold text-gray-700">{accrued}</span>
-                <div
-                  className="w-full max-w-[28px] bg-brand-cyan rounded-t-md transition-all duration-500"
-                  style={{ height: '90%' }}
-                />
-                <span className="text-[10px] text-gray-400 font-medium">Accr</span>
+      <CardContent className="flex-1 flex flex-col justify-between pt-2">
+        <div className="grid grid-cols-1 sm:grid-cols-12 gap-5 items-center">
+          {/* Bar Chart Visualization with Scaled Y-Axis (7 cols) */}
+          <div className="sm:col-span-7 flex flex-col pt-2">
+            <div className="flex h-36 items-stretch">
+              {/* Y-Axis scale numbers on left */}
+              <div className="flex flex-col justify-between text-right pr-2 text-[11px] text-gray-400 font-medium select-none w-5 leading-none">
+                {ticks.map((tick) => (
+                  <span key={tick}>{tick}</span>
+                ))}
               </div>
 
-              {/* Used Bar */}
-              <div className="flex flex-col items-center flex-1 gap-1.5 h-full justify-end">
-                <span className="text-[11px] font-bold text-gray-700">{used}</span>
-                <div
-                  className="w-full max-w-[28px] bg-[#1E7D94] rounded-t-md transition-all duration-500"
-                  style={{ height: `${(used / accrued) * 90}%` }}
-                />
-                <span className="text-[10px] text-gray-400 font-medium">Used</span>
-              </div>
+              {/* Gridlines and Bars container */}
+              <div className="relative flex-1 h-full">
+                {/* Horizontal gridlines aligned with ticks */}
+                <div className="absolute inset-0 flex flex-col justify-between pointer-events-none">
+                  {ticks.map((_, idx) => (
+                    <div
+                      key={idx}
+                      className={cn(
+                        'w-full border-t',
+                        idx === ticks.length - 1 ? 'border-gray-200' : 'border-gray-100'
+                      )}
+                    />
+                  ))}
+                </div>
 
-              {/* Remaining Bar */}
-              <div className="flex flex-col items-center flex-1 gap-1.5 h-full justify-end">
-                <span className="text-[11px] font-bold text-gray-700">{remaining}</span>
-                <div
-                  className="w-full max-w-[28px] bg-brand-orange rounded-t-md transition-all duration-500"
-                  style={{ height: `${(remaining / accrued) * 90}%` }}
-                />
-                <span className="text-[10px] text-gray-400 font-medium">Rem</span>
+                {/* 4 Colored Bars standing on baseline */}
+                <div className="relative z-10 h-full flex items-end justify-between px-3">
+                  {/* Bar 1: Accr (Cyan Gradient) */}
+                  <div
+                    className="flex flex-col items-center justify-end h-full flex-1 max-w-[28px] group"
+                    title={`Accrued: ${accrued} days`}
+                  >
+                    <div
+                      className="w-full bg-gradient-to-t from-[#2096B4] to-[#38B7D5] rounded-t-md transition-all duration-500 shadow-2xs group-hover:brightness-105"
+                      style={{ height: `${Math.min(100, Math.max(4, (accrued / maxScale) * 100))}%` }}
+                    />
+                  </div>
+
+                  {/* Bar 2: Ust (Used - Teal/Blue Gradient) */}
+                  <div
+                    className="flex flex-col items-center justify-end h-full flex-1 max-w-[28px] group"
+                    title={`Used: ${used} days`}
+                  >
+                    <div
+                      className="w-full bg-gradient-to-t from-[#166477] to-[#1E7D94] rounded-t-md transition-all duration-500 shadow-2xs group-hover:brightness-105"
+                      style={{ height: `${Math.min(100, Math.max(4, (used / maxScale) * 100))}%` }}
+                    />
+                  </div>
+
+                  {/* Bar 3: Red (Reserved / Total - Dark Navy Gradient) */}
+                  <div
+                    className="flex flex-col items-center justify-end h-full flex-1 max-w-[28px] group"
+                    title={`Total Entitlement: ${requested} days`}
+                  >
+                    <div
+                      className="w-full bg-gradient-to-t from-[#0F1E30] to-[#1B3A5A] rounded-t-md transition-all duration-500 shadow-2xs group-hover:brightness-105"
+                      style={{ height: `${Math.min(100, Math.max(4, (requested / maxScale) * 100))}%` }}
+                    />
+                  </div>
+
+                  {/* Bar 4: Rem (Remaining - Warm Orange Gradient) */}
+                  <div
+                    className="flex flex-col items-center justify-end h-full flex-1 max-w-[28px] group"
+                    title={`Remaining: ${remaining} days`}
+                  >
+                    <div
+                      className="w-full bg-gradient-to-t from-[#E28A25] to-[#F4A340] rounded-t-md transition-all duration-500 shadow-2xs group-hover:brightness-105"
+                      style={{ height: `${Math.min(100, Math.max(4, (remaining / maxScale) * 100))}%` }}
+                    />
+                  </div>
+                </div>
               </div>
+            </div>
+
+            {/* X-Axis Bar Labels underneath baseline */}
+            <div className="flex items-center pl-7 pr-3 pt-2 text-[11px] text-gray-500 font-medium">
+              <span className="flex-1 text-center">Accr</span>
+              <span className="flex-1 text-center">Ust</span>
+              <span className="flex-1 text-center">Red</span>
+              <span className="flex-1 text-center">Rem</span>
             </div>
           </div>
 
-          {/* Donut Chart Visualization */}
-          <div className="flex items-center justify-center relative">
-            <svg className="w-32 h-32 transform -rotate-90" viewBox="0 0 100 100">
+          {/* Donut Chart Visualization (5 cols) */}
+          <div className="sm:col-span-5 flex items-center justify-center relative">
+            <svg className="w-28 h-28 sm:w-32 sm:h-32 transform -rotate-90" viewBox="0 0 100 100">
               {/* Background ring */}
               <circle
                 cx="50"
@@ -112,7 +288,7 @@ export const LeaveBalanceCard: React.FC<LeaveBalanceCardProps> = ({ balances = [
             </svg>
 
             {/* Inner Center Label */}
-            <div className="absolute inset-0 flex flex-col items-center justify-center select-none">
+            <div className="absolute inset-0 flex flex-col items-center justify-center select-none pointer-events-none">
               <span className="text-2xl font-black text-navy-900 leading-none">{remaining}</span>
               <span className="text-[10px] uppercase font-bold tracking-wider text-gray-400 mt-0.5">Days Left</span>
             </div>
@@ -120,7 +296,7 @@ export const LeaveBalanceCard: React.FC<LeaveBalanceCardProps> = ({ balances = [
         </div>
 
         {/* Legend matching mockup */}
-        <div className="mt-5 pt-3 border-t border-gray-100 flex flex-wrap items-center justify-between gap-3 text-xs">
+        <div className="mt-4 pt-3 border-t border-gray-100 flex flex-wrap items-center justify-between gap-2 text-xs">
           <div className="flex items-center gap-1.5 font-medium text-gray-700">
             <span className="w-2.5 h-2.5 rounded-full bg-brand-cyan flex-shrink-0" />
             <span>Accrued: <strong className="text-navy-900">{accrued} days</strong></span>
@@ -140,3 +316,4 @@ export const LeaveBalanceCard: React.FC<LeaveBalanceCardProps> = ({ balances = [
     </Card>
   );
 };
+

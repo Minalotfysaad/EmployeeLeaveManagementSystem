@@ -43,7 +43,7 @@ export const INITIAL_USERS: (EmployeeDetailsDto & { managerId?: string })[] = [
     email: 'admin@company.com',
     departmentName: 'Human Resources',
     phoneNumber: '+1 (555) 019-2831',
-    roles: ['HR', 'Manager', 'Employee'],
+    roles: ['HR', 'Employee'],
     createdDate: '2025-01-01T00:00:00Z',
   },
   {

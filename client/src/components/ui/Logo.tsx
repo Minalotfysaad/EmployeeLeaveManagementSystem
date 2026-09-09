@@ -85,8 +85,8 @@ export const Logo: React.FC<LogoProps> = ({
 
   // Full brand logo (Icon + Wordmark)
   return (
-    <div className={cn('inline-flex flex-col select-none', className)}>
-      <div className="flex items-center">
+    <div className={cn('inline-flex flex-col items-center justify-center select-none', className)}>
+      <div className="flex items-center justify-center">
         <svg
           viewBox="0 0 645 162"
           fill="none"

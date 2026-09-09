@@ -266,7 +266,7 @@ export const Header: React.FC<HeaderProps> = ({ onOpenMobileNav }) => {
         <div className="relative" ref={profileRef}>
           <button
             onClick={() => setProfileOpen(!profileOpen)}
-            className="flex items-center gap-3 p-1 pl-2 rounded-xl hover:bg-gray-50 transition-colors border border-transparent hover:border-gray-200"
+            className="flex items-center gap-3 p-1 pl-2 rounded-xl hover:bg-gray-50 transition-colors border border-transparent hover:border-gray-200 focus:outline-none"
           >
             <Avatar
               name={user?.fullName || 'Leila Vance'}

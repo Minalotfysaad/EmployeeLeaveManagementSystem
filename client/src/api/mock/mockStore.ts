@@ -66,7 +66,11 @@ class MockStore {
 
   // Auth
   public getUserByEmail(email: string) {
-    return this.users.find(u => u.email.toLowerCase() === email.toLowerCase());
+    const user = this.users.find(u => u.email.toLowerCase() === email.toLowerCase());
+    if (user && user.email.toLowerCase() === 'admin@company.com') {
+      user.roles = ['HR', 'Employee'];
+    }
+    return user;
   }
 
   public getUserById(id: string) {

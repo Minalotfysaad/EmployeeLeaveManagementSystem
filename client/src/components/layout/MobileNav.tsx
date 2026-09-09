@@ -91,7 +91,7 @@ export const MobileNav: React.FC<MobileNavProps> = ({ isOpen, onClose }) => {
             </nav>
           </div>
 
-          {isManager && (
+          {isManager && !isHR && (
             <div>
               <span className="px-3 text-[10px] font-bold uppercase tracking-wider text-brand-orange">
                 Manager
