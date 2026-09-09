@@ -3,6 +3,7 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import {
   Bell,
   ChevronDown,
+  ChevronRight,
   LogOut,
   User as UserIcon,
   Menu,
@@ -89,24 +90,26 @@ export const Header: React.FC<HeaderProps> = ({ onOpenMobileNav }) => {
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
-  // Compute title from route path
-  const getPageTitle = () => {
+  // Compute breadcrumb navigation from route path
+  const getBreadcrumb = () => {
     const path = location.pathname;
-    if (path.includes('/dashboard')) return 'Dashboard';
-    if (path.includes('/requests')) return 'My Leave Requests';
-    if (path.includes('/balance')) return 'Leave Balance';
-    if (path.includes('/history')) return 'Leave History';
-    if (path.includes('/calendar')) return 'Team Availability Calendar';
-    if (path.includes('/manager/approvals')) return 'Pending Approvals';
-    if (path.includes('/manager/team')) return 'Team Management';
-    if (path.includes('/hr/approvals')) return 'HR Leave Approvals';
-    if (path.includes('/hr/employees')) return 'Employee Directory';
-    if (path.includes('/hr/departments')) return 'Departments Management';
-    if (path.includes('/hr/leave-types')) return 'Leave Types & Allowances';
-    if (path.includes('/hr/holidays')) return 'Public Holidays';
-    if (path.includes('/settings')) return 'Settings';
-    return 'Dashboard';
+    if (path.includes('/dashboard')) return { section: 'Overview', page: 'Dashboard' };
+    if (path.includes('/requests')) return { section: 'Time Off', page: 'My Requests' };
+    if (path.includes('/balance')) return { section: 'Time Off', page: 'Leave Balances' };
+    if (path.includes('/history')) return { section: 'Time Off', page: 'Leave History' };
+    if (path.includes('/calendar')) return { section: 'Time Off', page: 'Team Calendar' };
+    if (path.includes('/manager/approvals')) return { section: 'Management', page: 'Pending Approvals' };
+    if (path.includes('/manager/team')) return { section: 'Management', page: 'Team Directory' };
+    if (path.includes('/hr/approvals')) return { section: 'HR Admin', page: 'Approvals' };
+    if (path.includes('/hr/employees')) return { section: 'HR Admin', page: 'Employees' };
+    if (path.includes('/hr/departments')) return { section: 'HR Admin', page: 'Departments' };
+    if (path.includes('/hr/leave-types')) return { section: 'HR Admin', page: 'Leave Types & Policy' };
+    if (path.includes('/hr/holidays')) return { section: 'HR Admin', page: 'Public Holidays' };
+    if (path.includes('/settings')) return { section: 'Account', page: 'Settings' };
+    return { section: 'Portal', page: 'Dashboard' };
   };
+
+  const breadcrumb = getBreadcrumb();
 
   const handleResetData = () => {
     mockStore.resetToDefaults();
@@ -117,7 +120,7 @@ export const Header: React.FC<HeaderProps> = ({ onOpenMobileNav }) => {
 
   return (
     <header className="h-20 bg-white border-b border-[#E5EAF0] px-4 sm:px-8 flex items-center justify-between sticky top-0 z-20">
-      {/* Left Title & Mobile Menu Trigger */}
+      {/* Left Breadcrumbs & Mobile Menu Trigger */}
       <div className="flex items-center gap-3">
         <button
           onClick={onOpenMobileNav}
@@ -127,11 +130,15 @@ export const Header: React.FC<HeaderProps> = ({ onOpenMobileNav }) => {
           <Menu className="w-5 h-5" />
         </button>
 
-        <div>
-          <h2 className="text-xl sm:text-2xl font-bold text-navy-900 tracking-tight font-sans">
-            {getPageTitle()}
-          </h2>
-        </div>
+        <nav aria-label="Breadcrumb" className="flex items-center gap-2 text-xs">
+          <span className="font-medium text-gray-400">
+            {breadcrumb.section}
+          </span>
+          <ChevronRight className="w-3.5 h-3.5 text-gray-300 flex-shrink-0" />
+          <span className="font-semibold text-navy-900">
+            {breadcrumb.page}
+          </span>
+        </nav>
       </div>
 
       {/* Right User Actions & Persona Quick-Switcher */}
