@@ -1,4 +1,4 @@
-import { apiClient, USE_MOCK } from './axios';
+import { apiClient, isMockActive } from './axios';
 import {
   CreateLeaveRequestDto,
   LeaveRequestDetailsDto,
@@ -12,13 +12,9 @@ export const leaveRequestsApi = {
     dto: CreateLeaveRequestDto,
     currentUserId?: string
   ): Promise<LeaveRequestDetailsDto> {
-    if (!USE_MOCK) {
-      try {
-        const response = await apiClient.post<LeaveRequestDetailsDto>('/leaverequests', dto);
-        return response.data;
-      } catch (err) {
-        console.warn('Backend API createLeaveRequest failed, using mock...', err);
-      }
+    if (!isMockActive()) {
+      const response = await apiClient.post<LeaveRequestDetailsDto>('/leaverequests', dto);
+      return response.data;
     }
 
     const userId = currentUserId || '77777777-7777-7777-7777-777777777777';
@@ -26,32 +22,39 @@ export const leaveRequestsApi = {
   },
 
   async getMyLeaveRequests(
-    params: EmployeeQueryParameters = {},
-    currentUserId?: string
+    params?: EmployeeQueryParameters,
+    employeeId?: string
   ): Promise<PagedResult<LeaveRequestDetailsDto>> {
-    if (!USE_MOCK) {
-      try {
-        const response = await apiClient.get<PagedResult<LeaveRequestDetailsDto>>('/leaverequests/my', {
-          params,
-        });
-        return response.data;
-      } catch (err) {
-        console.warn('Backend API getMyLeaveRequests failed, using mock...', err);
-      }
+    if (!isMockActive()) {
+      const response = await apiClient.get<PagedResult<LeaveRequestDetailsDto>>(
+        '/leaverequests/my-requests',
+        { params }
+      );
+      return response.data;
     }
 
-    const userId = currentUserId || '77777777-7777-7777-7777-777777777777';
+    const userId = employeeId || '77777777-7777-7777-7777-777777777777';
     return mockStore.getMyRequests(userId, params);
   },
 
-  async getMyLeaveRequestById(id: string): Promise<LeaveRequestDetailsDto> {
-    if (!USE_MOCK) {
-      try {
-        const response = await apiClient.get<LeaveRequestDetailsDto>(`/leaverequests/my/${id}`);
-        return response.data;
-      } catch (err) {
-        console.warn('Backend API getMyLeaveRequestById failed, using mock...', err);
-      }
+  async getAllLeaveRequests(
+    params?: EmployeeQueryParameters
+  ): Promise<PagedResult<LeaveRequestDetailsDto>> {
+    if (!isMockActive()) {
+      const response = await apiClient.get<PagedResult<LeaveRequestDetailsDto>>(
+        '/leaverequests',
+        { params }
+      );
+      return response.data;
+    }
+
+    return mockStore.getAllRequests(params);
+  },
+
+  async getLeaveRequestById(id: string): Promise<LeaveRequestDetailsDto> {
+    if (!isMockActive()) {
+      const response = await apiClient.get<LeaveRequestDetailsDto>(`/leaverequests/${id}`);
+      return response.data;
     }
 
     const req = mockStore.getRequestById(id);
@@ -59,17 +62,12 @@ export const leaveRequestsApi = {
     return req;
   },
 
-  async cancelLeaveRequest(id: string, currentUserId?: string): Promise<void> {
-    if (!USE_MOCK) {
-      try {
-        await apiClient.patch(`/leaverequests/my/${id}/cancel`);
-        return;
-      } catch (err) {
-        console.warn('Backend API cancelLeaveRequest failed, using mock...', err);
-      }
+  async cancelLeaveRequest(requestId: string, currentUserId?: string): Promise<void> {
+    if (!isMockActive()) {
+      await apiClient.post(`/leaverequests/${requestId}/cancel`);
+      return;
     }
 
-    const userId = currentUserId || '77777777-7777-7777-7777-777777777777';
-    mockStore.cancelRequest(userId, id);
+    mockStore.cancelRequest(requestId, currentUserId);
   },
 };

@@ -35,8 +35,19 @@ apiClient.interceptors.response.use(
   }
 );
 
-// Flag to force mock mode or allow automatic fallback when backend server is not running
-export const USE_MOCK =
-  import.meta.env.VITE_USE_MOCK_API === 'true' ||
-  localStorage.getItem('leavo_force_mock') === 'true' ||
-  true; // Enabled by default for seamless instant demoing, can be toggled in header!
+// Check if demo mode is active
+export const isDemoModeActive = (): boolean => {
+  return localStorage.getItem('leavo_demo_mode') === 'true';
+};
+
+// Check if mock API should be used: only in demo mode or explicit env override
+export const isMockActive = (): boolean => {
+  return (
+    isDemoModeActive() ||
+    import.meta.env.VITE_USE_MOCK_API === 'true' ||
+    localStorage.getItem('leavo_force_mock') === 'true'
+  );
+};
+
+// Legacy export - evaluates dynamically via function in API modules
+export const USE_MOCK = false;

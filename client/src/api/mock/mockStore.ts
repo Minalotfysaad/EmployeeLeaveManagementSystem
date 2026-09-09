@@ -73,6 +73,10 @@ class MockStore {
     return this.users.find(u => u.id === id);
   }
 
+  public getUsers() {
+    return this.users;
+  }
+
   // Balances
   public getBalances(employeeId: string): BalanceDto[] {
     if (!this.balances[employeeId]) {
@@ -103,6 +107,31 @@ class MockStore {
     if (params.search) {
       const s = params.search.toLowerCase();
       items = items.filter(r => r.leaveType.toLowerCase().includes(s) || r.reason?.toLowerCase().includes(s));
+    }
+
+    const page = params.page || 1;
+    const pageSize = params.pageSize || 10;
+    const totalCount = items.length;
+    const startIndex = (page - 1) * pageSize;
+    const paginatedItems = items.slice(startIndex, startIndex + pageSize);
+
+    return {
+      items: paginatedItems,
+      page,
+      pageSize,
+      totalCount,
+      totalPages: Math.ceil(totalCount / pageSize) || 1,
+      hasPreviousPage: page > 1,
+      hasNextPage: page < Math.ceil(totalCount / pageSize),
+    };
+  }
+
+  public getAllRequests(params: EmployeeQueryParameters = {}): PagedResult<LeaveRequestDetailsDto> {
+    let items = [...this.requests];
+
+    if (params.search) {
+      const s = params.search.toLowerCase();
+      items = items.filter(r => r.employeeName.toLowerCase().includes(s) || r.department.toLowerCase().includes(s) || r.leaveType.toLowerCase().includes(s));
     }
 
     const page = params.page || 1;
@@ -161,8 +190,8 @@ class MockStore {
     return newRequest;
   }
 
-  public cancelRequest(employeeId: string, requestId: string) {
-    const req = this.requests.find(r => r.id === requestId && r.employeeId === employeeId);
+  public cancelRequest(requestId: string, employeeId?: string) {
+    const req = this.requests.find(r => r.id === requestId && (!employeeId || r.employeeId === employeeId));
     if (!req) throw new Error('Request not found');
     if (req.status !== RequestStatus.Pending) throw new Error('Only pending requests can be cancelled');
 

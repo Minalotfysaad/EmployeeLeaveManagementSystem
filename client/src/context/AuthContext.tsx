@@ -12,9 +12,11 @@ interface AuthContextType {
   isEmployee: boolean;
   isManager: boolean;
   isHR: boolean;
+  isDemoMode: boolean;
   login: (dto: LoginRequestDto) => Promise<void>;
   register: (dto: RegisterRequestDto) => Promise<void>;
   logout: () => void;
+  enterDemoMode: (persona?: 'Employee' | 'Manager' | 'HR') => void;
   switchRole: (role: 'Employee' | 'Manager' | 'HR') => void;
 }
 
@@ -22,7 +24,11 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const [token, setToken] = useState<string | null>(() => localStorage.getItem('leavo_token'));
+  const [isDemoMode, setIsDemoMode] = useState<boolean>(
+    () => localStorage.getItem('leavo_demo_mode') === 'true'
+  );
   const [user, setUser] = useState<AuthUser | null>(() => {
+    const isDemo = localStorage.getItem('leavo_demo_mode') === 'true';
     const saved = localStorage.getItem('leavo_user');
     if (saved) {
       try {
@@ -32,7 +38,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       }
     }
     const t = localStorage.getItem('leavo_token');
-    if (t && !isTokenExpired(t)) {
+    if (t && !isTokenExpired(t) && !isDemo) {
       return decodeJwt(t);
     }
     return null;
@@ -42,8 +48,33 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   // Initialize session on mount
   useEffect(() => {
     const initAuth = () => {
+      const isDemo = localStorage.getItem('leavo_demo_mode') === 'true';
       const storedToken = localStorage.getItem('leavo_token');
-      if (storedToken) {
+
+      if (isDemo) {
+        setIsDemoMode(true);
+        const savedUser = localStorage.getItem('leavo_user');
+        if (savedUser) {
+          try {
+            setUser(JSON.parse(savedUser));
+          } catch {
+            setUser(null);
+          }
+        } else {
+          const defaultUser = mockStore.getUserByEmail('leila.vance@company.com');
+          if (defaultUser) {
+            const demoUser: AuthUser = {
+              id: defaultUser.id,
+              email: defaultUser.email,
+              fullName: `${defaultUser.firstName} ${defaultUser.lastName}`,
+              roles: defaultUser.roles,
+            };
+            setUser(demoUser);
+            localStorage.setItem('leavo_user', JSON.stringify(demoUser));
+          }
+        }
+      } else if (storedToken) {
+        setIsDemoMode(false);
         if (isTokenExpired(storedToken)) {
           logout();
         } else {
@@ -56,18 +87,10 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
           }
         }
       } else {
-        // Default login as Leila Vance for initial seamless showcase if nothing is stored
-        const defaultUser = mockStore.getUserByEmail('leila.vance@company.com');
-        if (defaultUser) {
-          const demoUser: AuthUser = {
-            id: defaultUser.id,
-            email: defaultUser.email,
-            fullName: `${defaultUser.firstName} ${defaultUser.lastName}`,
-            roles: defaultUser.roles,
-          };
-          setUser(demoUser);
-          localStorage.setItem('leavo_user', JSON.stringify(demoUser));
-        }
+        // By default, user is unauthenticated - uses actual database on login
+        setIsDemoMode(false);
+        setUser(null);
+        setToken(null);
       }
       setIsLoading(false);
     };
@@ -98,6 +121,8 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
 
       setToken(res.token);
       setUser(authUser);
+      setIsDemoMode(false);
+      localStorage.removeItem('leavo_demo_mode');
       localStorage.setItem('leavo_token', res.token);
       localStorage.setItem('leavo_user', JSON.stringify(authUser));
     } finally {
@@ -120,6 +145,8 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
 
       setToken(res.token);
       setUser(authUser);
+      setIsDemoMode(false);
+      localStorage.removeItem('leavo_demo_mode');
       localStorage.setItem('leavo_token', res.token);
       localStorage.setItem('leavo_user', JSON.stringify(authUser));
     } finally {
@@ -127,15 +154,40 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     }
   };
 
+  const enterDemoMode = (persona: 'Employee' | 'Manager' | 'HR' = 'Employee') => {
+    let targetEmail = 'leila.vance@company.com';
+    if (persona === 'Manager') targetEmail = 'david.chen@company.com';
+    if (persona === 'HR') targetEmail = 'admin@company.com';
+
+    const target = mockStore.getUserByEmail(targetEmail) || mockStore.getUsers()[0];
+    const demoUser: AuthUser = {
+      id: target.id,
+      email: target.email,
+      fullName: `${target.firstName} ${target.lastName}`,
+      roles: target.roles,
+    };
+
+    setIsDemoMode(true);
+    setUser(demoUser);
+    setToken('mock-demo-token');
+    localStorage.setItem('leavo_demo_mode', 'true');
+    localStorage.setItem('leavo_user', JSON.stringify(demoUser));
+    localStorage.setItem('leavo_token', 'mock-demo-token');
+  };
+
   const logout = useCallback(() => {
     setToken(null);
     setUser(null);
+    setIsDemoMode(false);
     localStorage.removeItem('leavo_token');
     localStorage.removeItem('leavo_user');
+    localStorage.removeItem('leavo_demo_mode');
   }, []);
 
-  // Instant role & profile switcher for testing/demoing all 3 personas easily
+  // Instant role & profile switcher (active in Demo Mode)
   const switchRole = (targetRole: 'Employee' | 'Manager' | 'HR') => {
+    if (!isDemoMode) return;
+
     let targetEmail = 'leila.vance@company.com';
     if (targetRole === 'Manager') targetEmail = 'david.chen@company.com';
     if (targetRole === 'HR') targetEmail = 'admin@company.com';
@@ -168,9 +220,11 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         isEmployee,
         isManager,
         isHR,
+        isDemoMode,
         login,
         register,
         logout,
+        enterDemoMode,
         switchRole,
       }}
     >

@@ -10,7 +10,7 @@ import { Alert } from '../../components/ui/Alert';
 import { useAuth } from '../../hooks/useAuth';
 import { useToast } from '../../hooks/useToast';
 import { getErrorMessage } from '../../utils/errors';
-import { Mail, Lock, CheckCircle2 } from 'lucide-react';
+import { Mail, Lock, CheckCircle2, ArrowRight, Play } from 'lucide-react';
 
 const loginSchema = z.object({
   email: z.string().email('Please enter a valid email address'),
@@ -20,7 +20,7 @@ const loginSchema = z.object({
 type LoginFormData = z.infer<typeof loginSchema>;
 
 export const LoginPage: React.FC = () => {
-  const { login } = useAuth();
+  const { login, enterDemoMode } = useAuth();
   const { success } = useToast();
   const navigate = useNavigate();
   const [authError, setAuthError] = useState<string | null>(null);
@@ -28,13 +28,12 @@ export const LoginPage: React.FC = () => {
   const {
     register,
     handleSubmit,
-    setValue,
     formState: { errors, isSubmitting },
   } = useForm<LoginFormData>({
     resolver: zodResolver(loginSchema),
     defaultValues: {
-      email: 'leila.vance@company.com',
-      password: 'Password@123',
+      email: '',
+      password: '',
     },
   });
 
@@ -49,10 +48,10 @@ export const LoginPage: React.FC = () => {
     }
   };
 
-  const handleQuickDemo = (email: string) => {
-    setValue('email', email);
-    setValue('password', 'Password@123');
-    setAuthError(null);
+  const handleLaunchDemo = () => {
+    enterDemoMode('Employee');
+    success('Welcome to Leavo Demo Mode! Explore freely.');
+    navigate('/dashboard');
   };
 
   return (
@@ -114,38 +113,8 @@ export const LoginPage: React.FC = () => {
               Sign in to your account
             </h2>
             <p className="text-xs text-gray-500 mt-1">
-              Enter your credentials or choose a quick demo persona below.
+              Enter your credentials to access your organization's leave portal.
             </p>
-          </div>
-
-          {/* Quick Demo Persona Shortcuts */}
-          <div className="p-3.5 bg-[#F6F8FB] rounded-2xl border border-[#E5EAF0] space-y-2">
-            <span className="text-[10px] font-bold uppercase tracking-wider text-gray-400 block">
-              Quick Demo Personas
-            </span>
-            <div className="grid grid-cols-3 gap-2">
-              <button
-                type="button"
-                onClick={() => handleQuickDemo('leila.vance@company.com')}
-                className="px-2 py-1.5 rounded-xl border border-gray-200 bg-white hover:border-brand-teal text-[11px] font-bold text-gray-700 transition-all text-center"
-              >
-                Leila (Emp)
-              </button>
-              <button
-                type="button"
-                onClick={() => handleQuickDemo('david.chen@company.com')}
-                className="px-2 py-1.5 rounded-xl border border-gray-200 bg-white hover:border-brand-orange text-[11px] font-bold text-gray-700 transition-all text-center"
-              >
-                David (Mgr)
-              </button>
-              <button
-                type="button"
-                onClick={() => handleQuickDemo('admin@company.com')}
-                className="px-2 py-1.5 rounded-xl border border-gray-200 bg-white hover:border-brand-cyan text-[11px] font-bold text-gray-700 transition-all text-center"
-              >
-                Admin (HR)
-              </button>
-            </div>
           </div>
 
           {authError && (
@@ -179,19 +148,39 @@ export const LoginPage: React.FC = () => {
             <Button
               type="submit"
               variant="navy"
-              className="w-full py-3 mt-2"
+              className="w-full py-3 mt-2 font-semibold"
               isLoading={isSubmitting}
             >
               Sign In
             </Button>
           </form>
 
-          <div className="text-center text-xs text-gray-500 pt-2">
+          {/* Registration link */}
+          <div className="text-center text-xs text-gray-500 pt-1">
             Don't have an account yet?{' '}
             <Link to="/register" className="font-semibold text-brand-darkTeal hover:underline">
               Create employee account
             </Link>
           </div>
+
+          {/* Divider */}
+          <div className="relative flex items-center justify-center my-4">
+            <div className="border-t border-gray-200 w-full" />
+            <span className="bg-white px-3 text-[10px] font-bold text-gray-400 uppercase tracking-wider">
+              or
+            </span>
+          </div>
+
+          {/* Professional Demo Environment Action */}
+          <button
+            type="button"
+            onClick={handleLaunchDemo}
+            className="w-full h-11 px-4 rounded-xl border border-gray-200 bg-white hover:bg-gray-50/90 hover:border-gray-300 text-gray-700 hover:text-navy-900 text-xs font-semibold flex items-center justify-center gap-2 transition-all shadow-2xs cursor-pointer group"
+          >
+            <Play className="w-3.5 h-3.5 text-gray-500 group-hover:text-navy-900 transition-colors" />
+            <span>Access Demo Environment</span>
+            <ArrowRight className="w-3.5 h-3.5 text-gray-400 group-hover:text-gray-600 group-hover:translate-x-0.5 transition-all ml-0.5" />
+          </button>
         </div>
       </div>
     </div>

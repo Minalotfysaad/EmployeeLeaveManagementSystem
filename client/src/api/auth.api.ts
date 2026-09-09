@@ -1,23 +1,18 @@
-import { apiClient, USE_MOCK } from './axios';
+import { apiClient, isMockActive } from './axios';
 import { AuthResponseDto, LoginRequestDto, RegisterRequestDto } from '../types/auth.types';
 import { mockStore } from './mock/mockStore';
 
 export const authApi = {
   async login(dto: LoginRequestDto): Promise<AuthResponseDto> {
-    if (!USE_MOCK) {
-      try {
-        const response = await apiClient.post<AuthResponseDto>('/auth/login', dto);
-        return response.data;
-      } catch (err) {
-        console.warn('Backend API login failed, evaluating mock fallback...', err);
-        // Fall back if network error
-      }
+    if (!isMockActive()) {
+      const response = await apiClient.post<AuthResponseDto>('/auth/login', dto);
+      return response.data;
     }
 
-    // Mock Login implementation
+    // Mock Login implementation (for Demo Mode)
     const user = mockStore.getUserByEmail(dto.email);
     if (!user) {
-      throw new Error('Invalid email or password.');
+      throw new Error('Invalid email or password in demo database.');
     }
 
     // Generate a structured mock JWT containing real claims
@@ -41,13 +36,9 @@ export const authApi = {
   },
 
   async register(dto: RegisterRequestDto): Promise<AuthResponseDto> {
-    if (!USE_MOCK) {
-      try {
-        const response = await apiClient.post<AuthResponseDto>('/auth/register', dto);
-        return response.data;
-      } catch (err) {
-        console.warn('Backend API register failed, evaluating mock fallback...', err);
-      }
+    if (!isMockActive()) {
+      const response = await apiClient.post<AuthResponseDto>('/auth/register', dto);
+      return response.data;
     }
 
     const existing = mockStore.getUserByEmail(dto.email);

@@ -1,4 +1,4 @@
-import { apiClient, USE_MOCK } from './axios';
+import { apiClient, isMockActive } from './axios';
 import {
   HolidayDetailsDto,
   HolidaySummaryDto,
@@ -11,15 +11,11 @@ import { mockStore } from './mock/mockStore';
 
 export const holidaysApi = {
   async getHolidays(params: EmployeeQueryParameters = {}): Promise<PagedResult<HolidaySummaryDto>> {
-    if (!USE_MOCK) {
-      try {
-        const response = await apiClient.get<PagedResult<HolidaySummaryDto>>('/holidays', {
-          params,
-        });
-        return response.data;
-      } catch (err) {
-        console.warn('Backend API getHolidays failed, using mock...', err);
-      }
+    if (!isMockActive()) {
+      const response = await apiClient.get<PagedResult<HolidaySummaryDto>>('/holidays', {
+        params,
+      });
+      return response.data;
     }
 
     const all = mockStore.getHolidays();
@@ -35,13 +31,9 @@ export const holidaysApi = {
   },
 
   async getHoliday(id: string): Promise<HolidayDetailsDto> {
-    if (!USE_MOCK) {
-      try {
-        const response = await apiClient.get<HolidayDetailsDto>(`/holidays/${id}`);
-        return response.data;
-      } catch (err) {
-        console.warn('Backend API getHoliday failed, using mock...', err);
-      }
+    if (!isMockActive()) {
+      const response = await apiClient.get<HolidayDetailsDto>(`/holidays/${id}`);
+      return response.data;
     }
 
     const item = mockStore.getHolidays().find((h) => h.id === id);
@@ -50,41 +42,30 @@ export const holidaysApi = {
   },
 
   async createHoliday(dto: CreateHolidayDto): Promise<HolidayDetailsDto> {
-    if (!USE_MOCK) {
-      try {
-        const response = await apiClient.post<HolidayDetailsDto>('/holidays', dto);
-        return response.data;
-      } catch (err) {
-        console.warn('Backend API createHoliday failed, using mock...', err);
-      }
+    if (!isMockActive()) {
+      const response = await apiClient.post<HolidayDetailsDto>('/holidays', dto);
+      return response.data;
     }
 
     return mockStore.createHoliday(dto.name, dto.startDate, dto.endDate);
   },
 
   async updateHoliday(id: string, dto: UpdateHolidayDto): Promise<void> {
-    if (!USE_MOCK) {
-      try {
-        await apiClient.put(`/holidays/${id}`, dto);
-        return;
-      } catch (err) {
-        console.warn('Backend API updateHoliday failed, using mock...', err);
-      }
+    if (!isMockActive()) {
+      await apiClient.put(`/holidays/${id}`, dto);
+      return;
     }
 
     mockStore.updateHoliday(id, dto.name, dto.startDate, dto.endDate);
   },
 
   async deleteHoliday(id: string): Promise<void> {
-    if (!USE_MOCK) {
-      try {
-        await apiClient.delete(`/holidays/${id}`);
-        return;
-      } catch (err) {
-        console.warn('Backend API deleteHoliday failed, using mock...', err);
-      }
+    if (!isMockActive()) {
+      await apiClient.delete(`/holidays/${id}`);
+      return;
     }
 
     mockStore.deleteHoliday(id);
   },
 };
+

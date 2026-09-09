@@ -1,4 +1,4 @@
-import { apiClient, USE_MOCK } from './axios';
+import { apiClient, isMockActive } from './axios';
 import {
   DepartmentDetailsDto,
   CreateDepartmentDto,
@@ -10,15 +10,11 @@ import { mockStore } from './mock/mockStore';
 
 export const departmentsApi = {
   async getDepartments(params: EmployeeQueryParameters = {}): Promise<PagedResult<DepartmentDetailsDto>> {
-    if (!USE_MOCK) {
-      try {
-        const response = await apiClient.get<PagedResult<DepartmentDetailsDto>>('/hr/departments', {
-          params,
-        });
-        return response.data;
-      } catch (err) {
-        console.warn('Backend API getDepartments failed, using mock...', err);
-      }
+    if (!isMockActive()) {
+      const response = await apiClient.get<PagedResult<DepartmentDetailsDto>>('/hr/departments', {
+        params,
+      });
+      return response.data;
     }
 
     const all = mockStore.getDepartments();
@@ -34,13 +30,9 @@ export const departmentsApi = {
   },
 
   async getDepartment(id: string): Promise<DepartmentDetailsDto> {
-    if (!USE_MOCK) {
-      try {
-        const response = await apiClient.get<DepartmentDetailsDto>(`/hr/departments/${id}`);
-        return response.data;
-      } catch (err) {
-        console.warn('Backend API getDepartment failed, using mock...', err);
-      }
+    if (!isMockActive()) {
+      const response = await apiClient.get<DepartmentDetailsDto>(`/hr/departments/${id}`);
+      return response.data;
     }
 
     const dept = mockStore.getDepartments().find((d) => d.id === id);
@@ -49,39 +41,27 @@ export const departmentsApi = {
   },
 
   async createDepartment(dto: CreateDepartmentDto): Promise<DepartmentDetailsDto> {
-    if (!USE_MOCK) {
-      try {
-        const response = await apiClient.post<DepartmentDetailsDto>('/hr/departments', dto);
-        return response.data;
-      } catch (err) {
-        console.warn('Backend API createDepartment failed, using mock...', err);
-      }
+    if (!isMockActive()) {
+      const response = await apiClient.post<DepartmentDetailsDto>('/hr/departments', dto);
+      return response.data;
     }
 
     return mockStore.createDepartment(dto.name);
   },
 
   async updateDepartment(id: string, dto: UpdateDepartmentDto): Promise<void> {
-    if (!USE_MOCK) {
-      try {
-        await apiClient.put(`/hr/departments/${id}`, dto);
-        return;
-      } catch (err) {
-        console.warn('Backend API updateDepartment failed, using mock...', err);
-      }
+    if (!isMockActive()) {
+      await apiClient.put(`/hr/departments/${id}`, dto);
+      return;
     }
 
     mockStore.updateDepartment(id, dto.name);
   },
 
   async deleteDepartment(id: string): Promise<void> {
-    if (!USE_MOCK) {
-      try {
-        await apiClient.delete(`/hr/departments/${id}`);
-        return;
-      } catch (err) {
-        console.warn('Backend API deleteDepartment failed, using mock...', err);
-      }
+    if (!isMockActive()) {
+      await apiClient.delete(`/hr/departments/${id}`);
+      return;
     }
 
     mockStore.deleteDepartment(id);
