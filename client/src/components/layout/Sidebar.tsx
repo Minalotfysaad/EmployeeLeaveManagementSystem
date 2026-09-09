@@ -60,7 +60,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ className }) => {
       )}
     >
       {/* Brand Header */}
-      <div className="h-20 flex items-center justify-between px-5 border-b border-white/5">
+      <div className="h-20 flex-shrink-0 flex items-center justify-between px-5 border-b border-white/5">
         <NavLink to="/dashboard" className="flex items-center">
           <Logo variant="dark" size="md" collapsed={collapsed} />
         </NavLink>
@@ -76,7 +76,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ className }) => {
       </div>
 
       {/* Navigation Links */}
-      <div className="flex-1 overflow-y-auto py-5 px-3 space-y-6">
+      <div className="flex-1 overflow-y-auto overscroll-contain py-4 px-3 space-y-5 sidebar-scroll">
         {/* Main Employee Navigation */}
         <div>
           {!collapsed && (
@@ -183,9 +183,9 @@ export const Sidebar: React.FC<SidebarProps> = ({ className }) => {
 
       {/* Footer Branding Info */}
       {!collapsed && (
-        <div className="p-4 border-t border-white/5 text-[11px] text-gray-400 flex items-center justify-between">
-          <span>Leavo SaaS v1.0</span>
-          <span className="w-2 h-2 rounded-full bg-emerald-400" title="System Operational" />
+        <div className="flex-shrink-0 p-4 border-t border-white/5 text-[11px] text-gray-400 flex flex-col gap-0.5">
+          <span className="font-medium text-gray-300">Leavo SaaS v1.0</span>
+          <span className="text-[10px] text-gray-400">© Mina Lotfy Saad - 2026</span>
         </div>
       )}
     </aside>

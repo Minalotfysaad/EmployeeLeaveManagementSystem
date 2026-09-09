@@ -10,7 +10,7 @@ import { Alert } from '../../components/ui/Alert';
 import { useAuth } from '../../hooks/useAuth';
 import { useToast } from '../../hooks/useToast';
 import { getErrorMessage } from '../../utils/errors';
-import { Mail, Lock, Sparkles, CheckCircle2 } from 'lucide-react';
+import { Mail, Lock, CheckCircle2 } from 'lucide-react';
 
 const loginSchema = z.object({
   email: z.string().email('Please enter a valid email address'),
@@ -69,12 +69,7 @@ export const LoginPage: React.FC = () => {
         </div>
 
         {/* Center Showcase Statement */}
-        <div className="relative z-10 max-w-lg space-y-6">
-          <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/10 text-xs font-semibold text-brand-cyan backdrop-blur-sm border border-white/10">
-            <Sparkles className="w-3.5 h-3.5 text-brand-orange" />
-            <span>Modern Employee Leave Management</span>
-          </div>
-
+        <div className="relative z-10 max-w-lg space-y-6 my-auto">
           <h2 className="text-3xl sm:text-4xl font-extrabold tracking-tight font-sans leading-tight">
             Streamline company time off, approvals, and team availability.
           </h2>

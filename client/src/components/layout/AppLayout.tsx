@@ -10,7 +10,7 @@ export const AppLayout: React.FC = () => {
   return (
     <div className="min-h-screen flex bg-[#F6F8FB] text-[#1F2937]">
       {/* Desktop Navy Sidebar */}
-      <Sidebar className="hidden lg:flex" />
+      <Sidebar className="hidden lg:flex sticky top-0 h-screen flex-shrink-0" />
 
       {/* Mobile Responsive Nav */}
       <MobileNav isOpen={mobileNavOpen} onClose={() => setMobileNavOpen(false)} />
